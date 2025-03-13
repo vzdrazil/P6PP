@@ -16,19 +16,18 @@ namespace NotificationService.API.Services
             public string From { get; set; }
         }
 
-        private readonly IConfiguration _configuration;
+        private readonly SmtpSettings _smtpSettings;
+
         public MailAppService(IConfiguration configuration)
         {
-            _configuration = configuration;
+            _smtpSettings = configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
         }
 
         public async Task SendEmailAsync(IList<string> addresates, string subject, string body)
         {
-            var smtpSettings = _configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
-
             var mailMessage = new MailMessage
             {
-                From = new MailAddress(smtpSettings.From),
+                From = new MailAddress(_smtpSettings.From),
                 Subject = subject,
                 Body = body,
                 IsBodyHtml = true,
@@ -43,13 +42,11 @@ namespace NotificationService.API.Services
                 return;
             }
 
-            using (var smtpClient = new SmtpClient(smtpSettings.Host, smtpSettings.Port))
+            using (var smtpClient = new SmtpClient(_smtpSettings.Host, _smtpSettings.Port))
             {
-                smtpClient.EnableSsl = smtpSettings.EnableSsl;
+                smtpClient.EnableSsl = _smtpSettings.EnableSsl;
                 await smtpClient.SendMailAsync(mailMessage);
             }
         }
-
-        
     }
 }
