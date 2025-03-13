@@ -1,18 +1,36 @@
-using NotificationService.API.Services;
+using NotificationService.API.Extensions;
+using NotificationService.API.Features;
+using NotificationService.API.Persistence;
+
+// This is just an example how you CAN structure your microservice,
+// you can do it differently, but this is lightweight and easy to understand.
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
+// Configure port here + launchSettings.json ( + later Dockerfile EXPOSE XXXX)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5188);
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<MailAppService>();
+// Register services
+builder.Services.RegisterServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Create DB, tables, etc.
+// Also, you can use your own ORM or database library, this is just an example where i use Dapper (ULTRA FAST)
+// In group we have chosen to use MySQL server -> instance your own database there via docker compose in the future 
+// (For development you can use your local database so debugging is easier)
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+}
+
+if (!app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -20,16 +38,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseRouting();
 
-app.MapControllers();
-
-// Testovací endpoint pro odeslání e-mailu
-app.MapGet("/test-email", async (MailAppService emailService) =>
+// All endpoints here are defined in Features folder
+// Here you can register your endpoints, for example:
+app.UseEndpoints(enpoints =>
 {
-    IList<string> recipients = new List<string> { "recipient@example.com" };
-    await emailService.SendEmailAsync(recipients, "Test Email", "This is a test email.");
-    return Results.Ok("Email sent successfully");
+    SendEmailEndpoint.SendEmail(enpoints);
 });
 
 app.Run();

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
+using NotificationService.API.Persistence;
 
 namespace NotificationService.API.Services
 {
@@ -23,16 +24,17 @@ namespace NotificationService.API.Services
             _smtpSettings = configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
         }
 
-        public async Task SendEmailAsync(IList<string> addresates, string subject, string body)
+        public async Task SendEmailAsync(EmailArgs emailArgs)
         {
+
             var mailMessage = new MailMessage
             {
                 From = new MailAddress(_smtpSettings.From),
-                Subject = subject,
-                Body = body,
+                Subject = emailArgs.Subject,
+                Body = emailArgs.Body,
                 IsBodyHtml = true,
             };
-            foreach (var to in addresates)
+            foreach (var to in emailArgs.Address)
             {
                 mailMessage.To.Add(to);
             }
@@ -46,7 +48,9 @@ namespace NotificationService.API.Services
             {
                 smtpClient.EnableSsl = _smtpSettings.EnableSsl;
                 await smtpClient.SendMailAsync(mailMessage);
+
             }
+            
         }
     }
 }
