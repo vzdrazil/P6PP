@@ -1,11 +1,11 @@
-using AuthService.API.DTOs;
+using AuthService.API.DTO;
 using AuthService.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthService.API.Controllers;
 
-[Route("api/register")]
+[Route("api")]
 [ApiController]
 public class RegisterController : ControllerBase
 {
@@ -18,7 +18,7 @@ public class RegisterController : ControllerBase
         _roleManager = roleManager;
     }
 
-    [HttpPost("create")]
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
         if (!ModelState.IsValid)
@@ -34,6 +34,14 @@ public class RegisterController : ControllerBase
             role = await _roleManager.FindByNameAsync(model.RoleName);
             if (role == null)
                 return BadRequest("Invalid role");
+        }
+        else
+        {
+            role = await _roleManager.FindByNameAsync("User");
+            if (role == null)
+            {
+                return BadRequest("Default role not found");
+            }
         }
 
         if (!Enum.TryParse<UserState>(model.State, true, out var state))

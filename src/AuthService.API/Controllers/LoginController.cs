@@ -1,4 +1,4 @@
-using AuthService.API.DTOs;
+using AuthService.API.DTO;
 using AuthService.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

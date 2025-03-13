@@ -52,7 +52,7 @@ namespace AuthService.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<double>("Height")
+                    b.Property<double?>("Height")
                         .HasColumnType("double");
 
                     b.Property<DateTime>("LastLoggedOn")
@@ -113,7 +113,7 @@ namespace AuthService.API.Migrations
                     b.Property<bool>("Verified")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<double>("Weight")
+                    b.Property<double?>("Weight")
                         .HasColumnType("double");
 
                     b.HasKey("Id");
