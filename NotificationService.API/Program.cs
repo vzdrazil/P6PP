@@ -1,7 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using NotificationService.API.Extensions;
 using NotificationService.API.Features;
-using NotificationService.API.Persistence;
-
+using NotificationService.API.Persistence.Entities.DB;
 // This is just an example how you CAN structure your microservice,
 // you can do it differently, but this is lightweight and easy to understand.
 
@@ -15,6 +15,14 @@ builder.WebHost.ConfigureKestrel(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// TODO: Fix server version hardcode
+ServerVersion serverVersion = new MariaDbServerVersion("10.5.26");
+
+String connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+builder.Services.AddDbContext<NotificationDbContext>(
+    optionsBuilder => optionsBuilder.UseMySql(connectionString, serverVersion)
+);
 
 // Register services
 builder.Services.RegisterServices(builder.Configuration);
