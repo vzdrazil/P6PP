@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NotificationService.API.Persistence.Entities.DB.Interfaces;
 
-public class Template
+public class Template : Entity
 {
     [StringLength(100)]
     public required string Name { get; set; }
