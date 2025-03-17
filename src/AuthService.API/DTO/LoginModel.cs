@@ -1,13 +1,17 @@
 using System.ComponentModel.DataAnnotations;
+using Swashbuckle.AspNetCore.Annotations;
 
-namespace AuthService.API.DTO;
-
-public class LoginModel
+namespace AuthService.API.DTO
 {
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; }
-    
-    [Required]
-    public string Password { get; set; }
+    public class LoginModel
+    {
+        [Required]
+        [EmailAddress]
+        [SwaggerSchema(Description = "E-mail uživatele")]
+        public string Email { get; set; }
+        
+        [Required]
+        [SwaggerSchema(Description = "Heslo uživatele")]
+        public string Password { get; set; } 
+    }
 }
