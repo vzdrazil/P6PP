@@ -14,4 +14,5 @@ public class Template : Entity
     public required string Text { get; set; }
     [ForeignKey(nameof(TemplateType))]
     public required int TypeId { get; set; }
+    public required TemplateType TemplateType { get; set; }
 }
