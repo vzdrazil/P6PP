@@ -17,6 +17,8 @@ public class Bookings : Entity<int>
     
     [ForeignKey(nameof(User))]
     public int UserId { get; set; }
+    
+    [NotMapped]
     public IUser<int> User { get; set; }
     
     // todo: davat sem room?
