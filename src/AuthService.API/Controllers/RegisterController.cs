@@ -2,6 +2,7 @@ using AuthService.API.DTO;
 using AuthService.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ReservationSystem.Shared.Results;
 
 namespace AuthService.API.Controllers;
 
@@ -26,60 +27,37 @@ public class RegisterController : ControllerBase
 
         var existingUser = await _userManager.FindByEmailAsync(model.Email);
         if (existingUser != null)
-            return BadRequest("User with this email already exists");
-
-        Role? role = null;
-        if (!string.IsNullOrEmpty(model.RoleName))
-        {
-            role = await _roleManager.FindByNameAsync(model.RoleName);
-            if (role == null)
-                return BadRequest("Invalid role");
-        }
-        else
-        {
-            role = await _roleManager.FindByNameAsync("User");
-            if (role == null)
-            {
-                return BadRequest("Default role not found");
-            }
-        }
-
-        if (!Enum.TryParse<UserState>(model.State, true, out var state))
-            return BadRequest("Invalid state");
+            return BadRequest(new ApiResult<object>(null, false, "User with this email already exists."));
+        
 
 
         var user = new ApplicationUser
         {
-            UserName = model.Email,
             Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            Verified = model.Verified,
-            State = state,
-            Sex = model.Sex,
-            Height = model.Height,
-            Weight = model.Weight,
-            BirthDay = model.BirthDay,
-            RoleId = role.Id,
-            Role = role,
-            CreatedOn = DateTime.UtcNow,
-            UpdatedOn = DateTime.UtcNow
+            UserName = model.UserName,
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
 
         if (!result.Succeeded)
-            return BadRequest(result.Errors);
+            return BadRequest(new ApiResult<object>(result.Errors, false, result.Errors.ToString()));
 
-        await _userManager.AddToRoleAsync(user, role.Name);
 
-        return Ok(new
+        await _userManager.AddToRoleAsync(user, "User");
+
+        //TODO: při registraci se nevyplní normalizedEmail! díky tomu nefunguje login pro email
+        return Ok(new ApiResult<RegisterResponse> (new RegisterResponse(user.Id, user.Email)));
+    }
+
+    public class RegisterResponse
+    {
+        public string Id { get; set; }
+        public string Email { get; set; }
+
+        public RegisterResponse(string id, string email)
         {
-            user.Id,
-            user.Email,
-            user.FirstName,
-            user.LastName,
-            user.RoleId
-        });
+            Id = id;
+            Email = email;
+        }
     }
 }
