@@ -16,5 +16,8 @@ public class NotificationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder
+            .Entity<Template>()
+            .HasOne<TemplateType>(t => t.TemplateType);
     }
 }
