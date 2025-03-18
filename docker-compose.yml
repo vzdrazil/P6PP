@@ -1,15 +1,30 @@
 version: '3.8'
 
 services:
-  example-service:
+  #example-service:
+  #  build:
+  #    context: .
+  #    dockerfile: src/ExampleService.API/Dockerfile
+  #  container_name: example-service
+  #  ports:
+  #    - "5188:5188"
+  #  environment:
+  #    - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=exampledb;User=exampleuser;Password=yourpassword;
+  #  depends_on:
+  #    mysql:
+  #      condition: service_healthy
+  #  networks:
+  #    - backend
+
+  auth-service:
     build:
       context: .
-      dockerfile: src/ExampleService.API/Dockerfile
-    container_name: example-service
+      dockerfile: src/AuthService.API/Dockerfile
+    container_name: auth-service
     ports:
-      - "5188:5188"
+      - "8005:8005"
     environment:
-      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=exampledb;User=root;Password=yourpassword;
+      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=auth_db;User=root;Password=password123;
     depends_on:
       mysql:
         condition: service_healthy
@@ -21,10 +36,8 @@ services:
     container_name: mysql_local
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=yourpassword
-      - MYSQL_DATABASE=exampledb
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=yourpassword
+      - MYSQL_ROOT_PASSWORD=password123
+      - MYSQL_DATABASE=auth_db
     ports:
       - "3306:3306"
     volumes:
@@ -32,7 +45,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ppassword123"]
       interval: 10s
       retries: 5
       timeout: 5s
