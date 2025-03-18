@@ -5,13 +5,11 @@ namespace AuthService.API.DTO
 {
     public class LoginModel
     {
+        public string? UserName { get; set; }
+
+        public string? Email { get; set; }
+
         [Required]
-        [EmailAddress]
-        [SwaggerSchema(Description = "E-mail uživatele")]
-        public string Email { get; set; }
-        
-        [Required]
-        [SwaggerSchema(Description = "Heslo uživatele")]
-        public string Password { get; set; } 
+        public string Password { get; set; }
     }
 }

@@ -17,12 +17,6 @@ public class AuthDbContext : IdentityDbContext<ApplicationUser, Role, string>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<ApplicationUser>()
-            .HasOne(u => u.Role)
-            .WithMany()
-            .HasForeignKey(u => u.RoleId)
-            .OnDelete(DeleteBehavior.Restrict);
-
         builder.Entity<TokenBlackList>()
             .HasOne(t => t.User)
             .WithMany(u => u.TokenBlackLists)

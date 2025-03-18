@@ -3,14 +3,16 @@ using AuthService.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Swashbuckle.AspNetCore.Annotations; // Přidání knihovny Swagger anotací
+using Swashbuckle.AspNetCore.Annotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ReservationSystem.Shared.Results;
+
 
 namespace AuthService.API.Controllers
 {
-    [Route("api/login")]
+    [Route("api")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -23,33 +25,32 @@ namespace AuthService.API.Controllers
             _configuration = configuration;
         }
 
-        /// <summary>
-        /// Přihlášení uživatele a získání JWT tokenu
-        /// </summary>
-        /// <param name="model">Přihlašovací údaje uživatele</param>
-        /// <returns>JWT token</returns>
-        [HttpPost("authenticate")]
-        [Produces("application/json")]
-        [SwaggerOperation(Summary = "Přihlášení uživatele", Description = "Ověří uživatelské údaje a vrátí JWT token.")]
-        [SwaggerResponse(200, "Úspěšné přihlášení", typeof(TokenResponse))]
-        [SwaggerResponse(400, "Neplatná data")]
-        [SwaggerResponse(401, "Neplatný e-mail nebo heslo")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             if (!ModelState.IsValid)
-                return BadRequest("Invalid data.");
+                return BadRequest(new ApiResult<object>(null, false, "Invalid data."));
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            ApplicationUser user = null;
+
+            if (!string.IsNullOrEmpty(model.Email))
+            {
+                user = await _userManager.FindByEmailAsync(model.Email);
+            }
+            else if (!string.IsNullOrEmpty(model.UserName))
+            {
+                user = await _userManager.FindByNameAsync(model.UserName);
+            }
+
             if (user == null)
-                return Unauthorized("Invalid email or password.");
+                return Unauthorized(new ApiResult<object>(null, false, "Invalid username/email or password."));
 
             var result = await _userManager.CheckPasswordAsync(user, model.Password);
             if (!result)
-                return Unauthorized("Invalid email or password.");
+                return Unauthorized(new ApiResult<object>(null, false, "Invalid username/email or password."));
 
             var token = GenerateJwtToken(user);
-
-            return Ok(new TokenResponse { Token = token });
+            return Ok(new ApiResult<TokenResponse> (new TokenResponse(token)));
         }
 
         private string GenerateJwtToken(ApplicationUser user)
@@ -61,10 +62,6 @@ namespace AuthService.API.Controllers
                 new Claim(ClaimTypes.Email, user.Email),
             };
 
-            if (user.Role != null && !string.IsNullOrEmpty(user.Role.Name))
-            {
-                claims.Add(new Claim("role", user.Role.Name));
-            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -84,5 +81,10 @@ namespace AuthService.API.Controllers
     public class TokenResponse
     {
         public string Token { get; set; }
+
+        public TokenResponse(string token)
+        {
+            Token = token;
+        }
     }
 }
