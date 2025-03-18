@@ -4,16 +4,16 @@ namespace BookingPayments.API.Entities;
 
 public class Bookings : Entity<int>
 {
-    DateTime BookingDate { get; set; }
-    DateTime CheckInDate { get; set; }
-    DateTime CheckOutDate { get; set; }
-    int Price { get; set; }
+    public DateTime BookingDate { get; set; }
+    public DateTime CheckInDate { get; set; }
+    public DateTime CheckOutDate { get; set; }
+    public int Price { get; set; }
     
     [ForeignKey(nameof(BookingStatus))]
-    int StatusId { get; set; }
+    public int StatusId { get; set; }
     
     [ForeignKey(nameof(Services))]
-    int ServiceId { get; set; }
+    public int ServiceId { get; set; }
     
     [ForeignKey(nameof(User))]
     public int UserId { get; set; }

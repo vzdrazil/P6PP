@@ -5,5 +5,5 @@ namespace BookingPayments.API.Entities;
 [Table(nameof(Rooms))]
 public class Rooms : Entity<int>
 {
-    string? RoomName { get; set; }
+    public string? RoomName { get; set; }
 }

@@ -7,13 +7,13 @@ namespace BookingPayments.API.Entities;
 public class Discounts : Entity<int>
 { 
     [Required]
-    int DiscountPercentage { get; set; }
+    public int DiscountPercentage { get; set; }
     
     [Required]
-    DateTime ValidFrom { get; set; }
+    public DateTime ValidFrom { get; set; }
     
     [Required]
-    DateTime ValidTo { get; set; }
+    public DateTime ValidTo { get; set; }
     
-    bool IsValid { get; set; }
+    public bool IsValid { get; set; }
 }

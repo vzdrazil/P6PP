@@ -7,5 +7,5 @@ namespace BookingPayments.API.Entities;
 public class BookingStatus :  Entity<int>
 {
    [Required]
-   string? BookingStatusName { get; set; } 
+   public string? BookingStatusName { get; set; } 
 }
