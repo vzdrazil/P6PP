@@ -6,8 +6,8 @@ namespace BookingPayments.API.Entities;
 [Table(nameof(Services))]
 public class Services : Entity<int>
 {
-    int TrainerId { get; set; }
-    int Price { get; set; }
-    string? ServiceName { get; set; }
-    bool IsCancelled { get; set; }
+    public int TrainerId { get; set; }
+    public int Price { get; set; }
+    public string? ServiceName { get; set; }
+    public bool IsCancelled { get; set; }
 }
