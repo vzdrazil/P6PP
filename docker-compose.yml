@@ -1,19 +1,4 @@
 services:
-  #example-service:
-  #  build:
-  #    context: .
-  #    dockerfile: src/ExampleService.API/Dockerfile
-  #  container_name: example-service
-  #  ports:
-  #    - "5188:5188"
-  #  environment:
-  #    - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=exampledb;User=exampleuser;Password=yourpassword;
-  #  depends_on:
-  #    mysql:
-  #      condition: service_healthy
-  #  networks:
-  #    - backend
-
   auth-service:
     build:
       context: .
@@ -37,7 +22,7 @@ services:
     ports:
       - "5189:5189"
     environment:
-      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=userdb;User=root;Password=yourpassword;
+      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=user_db;User=root;Password=password123;
     depends_on:
       mysql:
         condition: service_healthy
@@ -50,12 +35,10 @@ services:
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=password123
-      - MYSQL_DATABASE=auth_db
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d 
     networks:
       - backend
     healthcheck:

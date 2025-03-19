@@ -4,27 +4,61 @@ using UserService.API.Persistence.Entities;
 
 namespace UserService.API.Features;
 
-public record UpdateUserRequest(string Username, string FirstName, string LastName, string Email, string PhoneNumber, decimal Weight, decimal Height);
+public record UpdateUserRequest(string Username, string FirstName, string LastName, string Email, string? PhoneNumber = null, decimal? Weight = null, decimal? Height = null, string? Sex = null);
 
 public class UpdateUserValidator : AbstractValidator<UpdateUserRequest>
 {
     public UpdateUserValidator()
     {
-        RuleFor(x => x.Username).NotEmpty().MaximumLength(20)
+        RuleFor(x => x.Username)
+            .NotEmpty()
+            .MaximumLength(20)
             .WithMessage("Username must be between 1 and 20 characters");
-        RuleFor(x => x.FirstName).NotEmpty().MaximumLength(20)
-            .WithMessage("First name must be between 1 and 20 characters");
-        RuleFor(x => x.LastName).NotEmpty().MaximumLength(20)
-            .WithMessage("Last name must be between 1 and 20 characters");
-        RuleFor(x => x.Email).NotEmpty().MaximumLength(50).EmailAddress()
-            .WithMessage("Invalid email address");
-        RuleFor(x => x.PhoneNumber).NotEmpty().MaximumLength(20)
-            .WithMessage("Phone number must be between 1 and 20 characters");
 
-        RuleFor(x => x.Weight).GreaterThan(0).LessThan(1000)
-            .WithMessage("Weight must be between 0 and 1000");
-        RuleFor(x => x.Height).GreaterThan(0).LessThan(300)
-            .WithMessage("Height must be between 0 and 300");
+        RuleFor(x => x.FirstName)
+            .NotEmpty()
+            .MaximumLength(20)
+            .WithMessage("First name must be between 1 and 20 characters");
+
+        RuleFor(x => x.LastName)
+            .NotEmpty()
+            .MaximumLength(20)
+            .WithMessage("Last name must be between 1 and 20 characters");
+
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .MaximumLength(50)
+            .EmailAddress()
+            .WithMessage("Invalid email address");
+
+        RuleFor(x => x.PhoneNumber)
+            .Matches(@"^\+?\d{7,15}$") 
+            .When(x => !string.IsNullOrEmpty(x.PhoneNumber))
+            .WithMessage("Phone number must be between 7 and 15 digits and can start with '+'");
+
+        RuleFor(x => x.Weight)
+            .InclusiveBetween(30, 300) 
+            .When(x => x.Weight.HasValue)
+            .WithMessage("Weight must be between 30 and 300 kg");
+
+        RuleFor(x => x.Height)
+            .InclusiveBetween(100, 250) 
+            .When(x => x.Height.HasValue)
+            .WithMessage("Height must be between 100 and 250 cm");
+        
+        RuleFor(x => x.Sex)
+            .Must(IsValidSex)
+            .When(x => x.Sex != null)
+            .WithMessage("Sex must be 'male' or 'female' or 'other'");
+    }
+
+    private bool IsValidSex(string sex)
+    {
+        sex = sex.ToLower();
+        
+        if (string.IsNullOrEmpty(sex)) return false;
+        
+        return string.Equals(sex, "male") || string.Equals(sex, "female") || string.Equals(sex, "other");
     }
 }
 
@@ -52,9 +86,10 @@ public class UpdateUserHandler
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.Email = request.Email;
-        user.PhoneNumber = request.PhoneNumber;
-        user.Weight = request.Weight;
-        user.Height = request.Height;
+        user.PhoneNumber = request.PhoneNumber ?? user.PhoneNumber;
+        user.Weight = request.Weight ?? user.Weight;
+        user.Height = request.Height ?? user.Height;
+        user.Sex = request.Sex ?? user.Sex;
         user.UpdatedOn = DateTime.UtcNow;
 
         await _userService.UpdateUserAsync(user, cancellationToken);

@@ -49,41 +49,41 @@ public class DatabaseInitializer
             // Now connect to the actual microservice database and ensure tables exist
             await using var connection = new MySqlConnection(_connectionString);
             await connection.OpenAsync();
-            /*
+            
             const string createRoleTableQuery = @"
                 CREATE TABLE IF NOT EXISTS Roles (
                     Id INT AUTO_INCREMENT PRIMARY KEY,
                     Name VARCHAR(20) NOT NULL,
-                    Description VARCHAR(50) NOT NULL,
-                    CreatedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    UpdatedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    Description VARCHAR(50) NOT NULL
                 );";
-            */
+            
             const string createTableQuery = @"
                 CREATE TABLE IF NOT EXISTS Users (
                     Id INT AUTO_INCREMENT PRIMARY KEY,
+                    RoleId INT NOT NULL,
                     Username VARCHAR(20) NOT NULL,
                     FirstName VARCHAR(20) NOT NULL,
                     LastName VARCHAR(20) NOT NULL,
                     Email VARCHAR(50) NOT NULL UNIQUE,
-                    Verified BOOLEAN DEFAULT FALSE,
                     State VARCHAR(20) NOT NULL,
-                    PhoneNumber VARCHAR(20) NOT NULL,
-                    Sex VARCHAR(10) NOT NULL,
-                    Weight DECIMAL(5, 2) NOT NULL,
-                    Height DECIMAL(5, 2) NOT NULL,
-                    DateOfBirth DATE NOT NULL,
-                    LastLoggedIn TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    PhoneNumber VARCHAR(20) NULL,
+                    Sex VARCHAR(10) NULL,
+                    Weight DECIMAL(5, 2) NULL,
+                    Height DECIMAL(5, 2) NULL,
+                    DateOfBirth DATE NULL,
                     CreatedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    UpdatedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    UpdatedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    CONSTRAINT FK_Users_Role FOREIGN KEY (RoleId) REFERENCES Roles(Id) ON DELETE CASCADE
                 );";
-            /*
-             // --> CONSTRAINT FK_Users_Role FOREIGN KEY (RoleId) REFERENCES Roles(Id) ON DELETE CASCADE
+
+            
             await connection.ExecuteAsync(createRoleTableQuery);
             _logger.LogInformation("'Roles' table checked/created successfully.");
-            */
+            
             await connection.ExecuteAsync(createTableQuery);
             _logger.LogInformation("'Users' table checked/created successfully.");
+            
+
         }
         catch (Exception ex)
         {

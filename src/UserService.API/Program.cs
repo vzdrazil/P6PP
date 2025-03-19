@@ -22,8 +22,11 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var databaseInitializer = services.GetRequiredService<DatabaseInitializer>();
-
     await databaseInitializer.InitializeDatabaseAsync();
+    
+    // Seed the database
+    var dbSeeder = services.GetRequiredService<DatabaseSeeder>();
+    await dbSeeder.SeedAsync();
 }
 
 // Configure the HTTP request pipeline.
@@ -46,11 +49,12 @@ app.UseEndpoints(endpoints =>
     UpdateUserEndpoint.Register(endpoints);
     CreateUserEndpoint.Register(endpoints);
     
-    /*
+    
     // ROLE ENDPOINTS
     GetRoleByIdEndpoint.Register(endpoints);
+    GetRolesEndpoint.Register(endpoints);
     CreateRoleEndpoint.Register(endpoints);
-    */
+    
 });
 
 app.Run();

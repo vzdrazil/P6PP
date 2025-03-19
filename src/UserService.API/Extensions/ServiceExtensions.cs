@@ -14,9 +14,10 @@ public static class ServiceExtensions
         // Register Db Context 
         services.AddSingleton<DapperContext>();
         services.AddSingleton<DatabaseInitializer>();
+        services.AddSingleton<DatabaseSeeder>();
         
         // Register Repositories
-        // services.AddScoped<RoleRepository>();
+        services.AddScoped<RoleRepository>();
         services.AddScoped<UserRepository>();
         
         // Register Services
@@ -37,12 +38,14 @@ public static class ServiceExtensions
         services.AddSingleton<CreateUserValidator>();
         
         services.AddScoped<GetUsersHandler>();
+
+        services.AddScoped<GetRolesHandler>();
         
-        //services.AddScoped<GetRoleByIdHandler>();
-        //services.AddSingleton<GetRoleByIdValidator>();
+        services.AddScoped<GetRoleByIdHandler>();
+        services.AddSingleton<GetRoleByIdValidator>();
         
-        //services.AddScoped<CreateRoleHandler>();
-        //services.AddSingleton<CreateRoleValidator>();
+        services.AddScoped<CreateRoleHandler>();
+        services.AddSingleton<CreateRoleValidator>();
 
         // HttpClient
         services.AddHttpClient<NetworkHttpClient>();

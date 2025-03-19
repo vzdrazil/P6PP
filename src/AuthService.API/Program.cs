@@ -6,6 +6,7 @@ using AuthService.API.DTO;
 using AuthService.API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using ReservationSystem.Shared.Clients;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,8 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, Role>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddHttpClient<NetworkHttpClient>();
 
 builder.Services.AddControllers();
 
@@ -80,15 +83,25 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<AuthDbContext>();
 
-    var roleManager = services.GetRequiredService<RoleManager<Role>>();
-    
-    context.Database.Migrate();
-    
-    var roleSeeder = new RoleSeeder(roleManager);
-    await roleSeeder.SeedRolesAsync();
+    try
+    {
+        context.Database.Migrate();
+        Console.WriteLine("✅ Database Migrations Applied Successfully.");
+        
+        // Seed roles after ensuring database schema exists
+        /*
+        var roleManager = services.GetRequiredService<RoleManager<Role>>();
+        var roleSeeder = new RoleSeeder(roleManager);
+        await roleSeeder.SeedRolesAsync();
+        */
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error applying migrations: {ex.Message}");
+    }
 }
 
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
