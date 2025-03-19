@@ -50,16 +50,15 @@ namespace AuthService.API.Controllers
                 return Unauthorized(new ApiResult<object>(null, false, "Invalid username/email or password."));
 
             var token = GenerateJwtToken(user);
-            return Ok(new ApiResult<TokenResponse> (new TokenResponse(token)));
+            return Ok(new ApiResult<string>(token));
         }
 
         private string GenerateJwtToken(ApplicationUser user)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email),
             };
 
 
@@ -70,21 +69,11 @@ namespace AuthService.API.Controllers
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(60),
+                expires: DateTime.Now.AddMinutes(15),
                 signingCredentials: creds
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-    }
-
-    public class TokenResponse
-    {
-        public string Token { get; set; }
-
-        public TokenResponse(string token)
-        {
-            Token = token;
         }
     }
 }
