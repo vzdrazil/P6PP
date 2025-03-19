@@ -16,7 +16,7 @@ public class RoleRepository
     {
         cancellationToken.ThrowIfCancellationRequested();
         
-        using var connection = await _context.CreateConnectionAsync();
+        await using var connection = await _context.CreateConnectionAsync();
         const string query = "SELECT * FROM Roles;";
         return await connection.QueryAsync<Role>(query);
     }

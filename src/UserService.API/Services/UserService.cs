@@ -102,4 +102,24 @@ public class UserService
         
         return success;
     }
+
+    public async Task<bool> AssignUserRole(int userId, int roleId, CancellationToken cancellationToken)
+    {
+        var role = await _roleRepository.GetByIdAsync(roleId, cancellationToken);
+        
+        if (role is null)
+        {
+            return false;
+        }
+
+        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+        
+        if (user is null)
+        {
+            return false;
+        }
+        
+        user.RoleId = roleId;
+        return await _userRepository.UpdateAsync(user, cancellationToken);
+    }
 }

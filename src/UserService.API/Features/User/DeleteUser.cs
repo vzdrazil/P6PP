@@ -27,7 +27,7 @@ public class DeleteUserHandler
         cancellationToken.ThrowIfCancellationRequested();
 
         var success = await _userService.DeleteUserAsync(request.Id, cancellationToken);
-        
+        // TODO: Call to auth/delete ??
         return success 
             ? new ApiResult<bool>(success) 
             : new ApiResult<bool>(success, false, "User not found");
