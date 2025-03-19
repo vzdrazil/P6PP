@@ -8,18 +8,28 @@ namespace UserService.API.Services;
 public class UserService
 {
     private readonly UserRepository _userRepository;
+    private readonly RoleRepository _roleRepository;
     private readonly IMemoryCache _cache;
     private const string CacheKey = "user";
     
-    public UserService(UserRepository userRepository, IMemoryCache cache)
+    public UserService(UserRepository userRepository, IMemoryCache cache, RoleRepository roleRepository)
     {
         _userRepository = userRepository;
         _cache = cache;
+        _roleRepository = roleRepository;
     }
     
     public async Task<IEnumerable<User>> GetAllUsersAsync(CancellationToken cancellationToken) // TODO: Pagination
     {
-        return await _userRepository.GetAllAsync(cancellationToken);
+        var roles = await _roleRepository.GetAllAsync(cancellationToken);
+        var users = await _userRepository.GetAllAsync(cancellationToken);
+        
+        foreach (var user in users)
+        {
+            user.Role = roles.FirstOrDefault(x => x.Id == user.RoleId);
+        }
+        
+        return users;
     }
     
     public async Task<User?> GetUserByIdAsync(int id, CancellationToken cancellationToken)
@@ -32,6 +42,7 @@ public class UserService
 
             if (user != null)
             {
+                user.Role = await _roleRepository.GetByIdAsync(user.RoleId, cancellationToken);
                 _cache.Set(cacheKey, user, TimeSpan.FromMinutes(10));
             }
         }
@@ -47,8 +58,12 @@ public class UserService
 
         try
         {
+            var allRoles = await _roleRepository.GetAllAsync(cancellationToken);
+            var role = allRoles.FirstOrDefault(x => x.Name == "User");
+            user.RoleId = role.Id;
+            
             var newUserId = await _userRepository.AddAsync(user, cancellationToken);
-
+            
             if (newUserId != null)
             {
                 _cache.Set(cacheKey, user, TimeSpan.FromMinutes(10));

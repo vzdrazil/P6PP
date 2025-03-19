@@ -19,7 +19,7 @@ public class DapperContext
             .WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(100 * Math.Pow(2, attempt)));
     }
 
-    public async Task<IDbConnection> CreateConnectionAsync()
+    public async Task<MySqlConnection> CreateConnectionAsync()
     {
         var connection = new MySqlConnection(_connectionString);
         await _retryPolicy.ExecuteAsync(() => connection.OpenAsync());

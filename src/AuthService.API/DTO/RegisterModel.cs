@@ -15,6 +15,14 @@ namespace AuthService.API.DTO
         [Required]
         [MinLength(6)]
         public required string Password { get; set; }
+        
+        [Required]
+        [MinLength(2)]
+        public required string FirstName { get; set; }
+        
+        [Required]
+        [MinLength(2)]
+        public required string LastName { get; set; }
 
     }
 }

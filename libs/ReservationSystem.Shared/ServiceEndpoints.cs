@@ -5,7 +5,7 @@ public static class ServiceEndpoints
     public static class UserService
     {
         // USERS
-        private const string BaseUrl = "https://localhost:5189";
+        private const string BaseUrl = "http://user-service:5189";
         
         public static string CreateUser => $"{BaseUrl}/api/user";
         public static string GetUserById(int id) => $"{BaseUrl}/api/user/{id}";
@@ -17,7 +17,7 @@ public static class ServiceEndpoints
 
     public static class AuthService
     {
-        private const string BaseUrl = "https://localhost:8005";
+        private const string BaseUrl = "http://localhost:8005";
         
         public static string Login => $"{BaseUrl}/api/auth/login";
         public static string Register => $"{BaseUrl}/api/auth/register";

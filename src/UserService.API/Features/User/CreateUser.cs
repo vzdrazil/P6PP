@@ -6,7 +6,7 @@ using UserService.API.Persistence.Entities;
 
 namespace UserService.API.Features;
 
-public record CreateUserRequest(string Username, string FirstName, string LastName, string Email, string Password, string PhoneNumber, string Sex, decimal Weight, decimal Height, DateTime DateOfBirth);
+public record CreateUserRequest(string Username, string FirstName, string LastName, string Email);
 
 public record CreateUserResponse(int Id);
 
@@ -22,26 +22,6 @@ public class CreateUserValidator : AbstractValidator<CreateUserRequest>
             .WithMessage("Last name must be between 1 and 20 characters");
         RuleFor(x => x.Email).NotEmpty().MaximumLength(50).EmailAddress()
             .WithMessage("Invalid email address");
-        RuleFor(x => x.Password).NotEmpty().MinimumLength(8).MaximumLength(20)
-            .WithMessage("Password must be between 8 and 20 characters");
-        RuleFor(x => x.PhoneNumber).NotEmpty().MaximumLength(20)
-            .WithMessage("Phone number must be between 1 and 20 characters");
-
-        RuleFor(x => x.Sex).NotEmpty().Must(BeAValidSex).WithMessage("Not a valid sex");
-        
-        RuleFor(x => x.Weight).GreaterThan(0).LessThan(1000)
-            .WithMessage("Weight must be between 0 and 1000");
-        RuleFor(x => x.Height).GreaterThan(0).LessThan(300)
-            .WithMessage("Height must be between 0 and 300");
-    }
-
-    private bool BeAValidSex(string sex)
-    {
-        // Sex can be only: "male", "female", "other"
-
-        string lowerSex = sex.ToLowerInvariant();
-
-        return string.Equals(lowerSex, "male") || string.Equals(lowerSex, "female") || string.Equals(lowerSex, "other");
     }
 }
 
@@ -56,7 +36,7 @@ public class CreateUserHandler
         _httpClient = httpClient;
     }
 
-    public async Task<ApiResult<CreateUserResponse>> HandleAsync(CreateUserRequest request,
+    public async Task<ApiResult<int>> HandleAsync(CreateUserRequest request,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -67,12 +47,7 @@ public class CreateUserHandler
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,
-            PhoneNumber = request.PhoneNumber,
-            DateOfBirth = request.DateOfBirth,
             State = "Active",
-            Sex = request.Sex,
-            Weight = request.Weight,
-            Height = request.Height,
             CreatedOn = DateTime.UtcNow,
             UpdatedOn = DateTime.UtcNow
         };
@@ -81,30 +56,13 @@ public class CreateUserHandler
 
         if (id is null)
         {
-            return new ApiResult<CreateUserResponse>(null, false, "Failed to create user, duplicate email.");
+            return new ApiResult<int>(0, false, "Failed to create user, duplicate email.");
         }
         
-        // Call to auth
-        /*
-        var url = ServiceEndpoints.AuthService.Register;
-        var model = new
-        {
-            Email = request.Email,
-            Password = request.Password,
-            Username = request.Username,
-            UserId = id
-        };
-        
-        var response = await _httpClient.PostAsync<object, object>(url, model, cancellationToken);
-        
-        if (!response.Success)
-        {
-            return new ApiResult<CreateUserResponse>(null, false, response.Message);
-        }
-        */
+
         return id is null
-            ? new ApiResult<CreateUserResponse>(null, false, "Failed to create user")
-            : new ApiResult<CreateUserResponse>(new CreateUserResponse(id.Value));
+            ? new ApiResult<int>(0, false, "Failed to create user")
+            : new ApiResult<int>(id.Value);
     }
 }
 

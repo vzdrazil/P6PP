@@ -36,8 +36,8 @@ public class RoleRepository
 
         using var connection = await _context.CreateConnectionAsync();
         const string query = @"
-        INSERT INTO Roles (Name, Description, CreatedOn, UpdatedOn) 
-        VALUES (@Name, @Description, NOW(), NOW());
+        INSERT INTO Roles (Name, Description) 
+        VALUES (@Name, @Description);
         SELECT LAST_INSERT_ID();"; 
 
         return await connection.ExecuteScalarAsync<int>(query, role);
@@ -50,7 +50,7 @@ public class RoleRepository
         using var connection = await _context.CreateConnectionAsync();
         const string query = @"
             UPDATE Roles 
-            SET Name = @Name, Description = @Description, UpdatedOn = NOW()
+            SET Name = @Name, Description = @Description
             WHERE Id = @Id;";
         await connection.ExecuteAsync(query, role);
     }

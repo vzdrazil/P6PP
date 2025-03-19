@@ -32,8 +32,7 @@ public class CreateRoleHandler
         var role = new Role
         {
             Name = request.Name,
-            Description = request.Description,
-            CreatedOn = DateTime.Now
+            Description = request.Description
         };
 
         var id = await _roleService.AddRoleAsync(role, cancellationToken);
