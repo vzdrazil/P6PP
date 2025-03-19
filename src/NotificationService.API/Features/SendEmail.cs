@@ -63,6 +63,7 @@ public static class SendEmailEndpoint
 
                 if (!validationResult.IsValid)
                 {
+                    Console.WriteLine(validationResult.Errors);
                     var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage);
                     return Results.BadRequest(new ApiResult<IEnumerable<string>>(errorMessages, false, "Validation failed"));
                 }
