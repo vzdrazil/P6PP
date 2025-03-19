@@ -41,6 +41,7 @@ app.UseEndpoints(endpoints =>
 {
     // USER ENDPOINTS
     GetUserByIdEndpoint.Register(endpoints);
+    GetUsersEndpoint.Register(endpoints);
     DeleteUserEndpoint.Register(endpoints);
     UpdateUserEndpoint.Register(endpoints);
     CreateUserEndpoint.Register(endpoints);

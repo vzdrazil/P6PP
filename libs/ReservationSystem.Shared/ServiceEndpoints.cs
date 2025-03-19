@@ -9,10 +9,10 @@ public static class ServiceEndpoints
         
         public static string CreateUser => $"{BaseUrl}/api/user";
         public static string GetUserById(int id) => $"{BaseUrl}/api/user/{id}";
+        public static string UpdateUser(int id) => $"{BaseUrl}/api/user/{id}";
+        public static string GetUsers => $"{BaseUrl}/api/users";
         
-        // ROLES
-        public static string GetRoleById(int id) => $"{BaseUrl}/api/role/{id}";
-        public static string CreateRole => $"{BaseUrl}/api/role";
+        
     }
 
     public static class AuthService

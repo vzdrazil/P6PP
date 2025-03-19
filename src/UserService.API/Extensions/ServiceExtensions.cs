@@ -36,6 +36,8 @@ public static class ServiceExtensions
         services.AddScoped<CreateUserHandler>();
         services.AddSingleton<CreateUserValidator>();
         
+        services.AddScoped<GetUsersHandler>();
+        
         //services.AddScoped<GetRoleByIdHandler>();
         //services.AddSingleton<GetRoleByIdValidator>();
         
