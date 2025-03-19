@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   #example-service:
   #  build:
@@ -30,6 +28,21 @@ services:
         condition: service_healthy
     networks:
       - backend
+  
+  user-service:
+    build:
+      context: .
+      dockerfile: src/UserService.API/Dockerfile
+    container_name: user-service
+    ports:
+      - "5189:5189"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=userdb;User=root;Password=yourpassword;
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - backend
 
   mysql:
     image: mysql:latest
@@ -42,6 +55,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d 
     networks:
       - backend
     healthcheck:
@@ -55,3 +69,4 @@ volumes:
 
 networks:
   backend:
+    driver: bridge
