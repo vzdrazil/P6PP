@@ -18,7 +18,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\libs\ReservationSystem.Shared\ReservationSystem.Shared.csproj" />
+    <ProjectReference Include="..\..\libs\ReservationSystem.Shared\ReservationSystem.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+      <DependentUpon>Dockerfile</DependentUpon>
+    </Content>
   </ItemGroup>
 
 </Project>
