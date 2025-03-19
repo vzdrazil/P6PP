@@ -1,54 +1,50 @@
 using FluentValidation;
 using ReservationSystem.Shared.Results;
-using UserService.API.Persistence.Entities;
 
 namespace UserService.API.Features;
 
-public record GetUserByIdRequest(int Id);
+public record DeleteUserRequest(int Id);
 
-public record GetUserByIdResponse(User User);
-
-public class GetUserByIdRequestValidator : AbstractValidator<GetUserByIdRequest>
+public class DeleteUserValidator : AbstractValidator<DeleteUserRequest>
 {
-    public GetUserByIdRequestValidator()
+    public DeleteUserValidator()
     {
-        RuleFor(x => x.Id).GreaterThan(0)
-            .WithMessage("Invadil Id");
+        RuleFor(x => x.Id).GreaterThan(0);
     }
 }
 
-public class GetUserByIdHandler
+public class DeleteUserHandler
 {
     private readonly Services.UserService _userService;
-    
-    public GetUserByIdHandler(Services.UserService userService)
+
+    public DeleteUserHandler(Services.UserService userService)
     {
         _userService = userService;
     }
-    
-    public async Task<ApiResult<GetUserByIdResponse>> HandleAsync(GetUserByIdRequest request, CancellationToken cancellationToken)
+
+    public async Task<ApiResult<bool>> HandleAsync(DeleteUserRequest request, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        
-        var user = await _userService.GetUserByIdAsync(request.Id, cancellationToken);
 
-        return user is null
-            ? new ApiResult<GetUserByIdResponse>(null, false, "User not found")
-            : new ApiResult<GetUserByIdResponse>(new GetUserByIdResponse(user));
+        var success = await _userService.DeleteUserAsync(request.Id, cancellationToken);
+        
+        return success 
+            ? new ApiResult<bool>(success) 
+            : new ApiResult<bool>(success, false, "User not found");
     }
 }
 
-public static class GetUserByIdEndpoint
+public static class DeleteUserEndpoint
 {
     public static void Register(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/users/{id:int}",
+        app.MapDelete("/api/user/{id:int}",
             async (int id,
-                GetUserByIdHandler handler,
-                GetUserByIdRequestValidator validator,
+                DeleteUserHandler handler,
+                DeleteUserValidator validator,
                 CancellationToken cancellationToken) =>
             {
-                var request = new GetUserByIdRequest(id);
+                var request = new DeleteUserRequest(id);
                 var validationResult = await validator.ValidateAsync(request, cancellationToken);
                 
                 if (!validationResult.IsValid)
@@ -58,7 +54,7 @@ public static class GetUserByIdEndpoint
                 }
 
                 var result = await handler.HandleAsync(request, cancellationToken);
-                
+
                 return result.Success
                     ? Results.Ok(result)
                     : Results.NotFound(result);

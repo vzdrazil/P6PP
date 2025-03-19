@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Caching.Memory;
+using UserService.API.Exceptions;
 using UserService.API.Persistence.Entities;
 using UserService.API.Persistence.Repositories;
 
@@ -41,16 +42,24 @@ public class UserService
     public async Task<int?> AddUserAsync(User user, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        
-        string cacheKey = $"{CacheKey}:{user.Id}";
-        var newUser = await _userRepository.AddAsync(user, cancellationToken);
-        
-        if (newUser != null)
+    
+        string cacheKey = $"{CacheKey}:{user.Email}";
+
+        try
         {
-            _cache.Set(cacheKey, user, TimeSpan.FromMinutes(10));
+            var newUserId = await _userRepository.AddAsync(user, cancellationToken);
+
+            if (newUserId != null)
+            {
+                _cache.Set(cacheKey, user, TimeSpan.FromMinutes(10));
+            }
+
+            return newUserId;
         }
-        
-        return newUser;
+        catch (DuplicateEntryException)
+        {
+            return null; 
+        }
     }
     
     public async Task<bool> UpdateUserAsync(User user, CancellationToken cancellationToken)

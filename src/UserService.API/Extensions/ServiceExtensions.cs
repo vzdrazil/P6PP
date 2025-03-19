@@ -1,4 +1,6 @@
+using ReservationSystem.Shared.Clients;
 using UserService.API.Features;
+using UserService.API.Features.Roles;
 using UserService.API.Persistence;
 using UserService.API.Persistence.Repositories;
 using UserService.API.Services;
@@ -14,7 +16,7 @@ public static class ServiceExtensions
         services.AddSingleton<DatabaseInitializer>();
         
         // Register Repositories
-        services.AddScoped<RoleRepository>();
+        // services.AddScoped<RoleRepository>();
         services.AddScoped<UserRepository>();
         
         // Register Services
@@ -23,7 +25,25 @@ public static class ServiceExtensions
         
         // Register Endpoints injections
         services.AddScoped<GetUserByIdHandler>();
-        services.AddSingleton<GetUserByIdRequestValidator>();
+        services.AddSingleton<GetUserByIdValidator>();
+        
+        services.AddScoped<DeleteUserHandler>();
+        services.AddSingleton<DeleteUserValidator>();
+
+        services.AddScoped<UpdateUserHandler>();
+        services.AddSingleton<UpdateUserValidator>();
+
+        services.AddScoped<CreateUserHandler>();
+        services.AddSingleton<CreateUserValidator>();
+        
+        //services.AddScoped<GetRoleByIdHandler>();
+        //services.AddSingleton<GetRoleByIdValidator>();
+        
+        //services.AddScoped<CreateRoleHandler>();
+        //services.AddSingleton<CreateRoleValidator>();
+
+        // HttpClient
+        services.AddHttpClient<NetworkHttpClient>();
         
         // Register Memory Cache
         services.AddMemoryCache();

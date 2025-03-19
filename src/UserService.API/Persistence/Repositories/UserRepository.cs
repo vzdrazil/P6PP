@@ -1,4 +1,6 @@
 using Dapper;
+using MySqlConnector;
+using UserService.API.Exceptions;
 using UserService.API.Persistence.Entities;
 
 namespace UserService.API.Persistence.Repositories;
@@ -11,7 +13,80 @@ public class UserRepository
     {
         _context = context;
     }
+    
+    public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken) // TODO: Pagination
+    {
+        cancellationToken.ThrowIfCancellationRequested(); 
 
+        using var connection = await _context.CreateConnectionAsync();
+        const string query = "SELECT * FROM Users;";
+
+        return await connection.QueryAsync<User>(query);
+    }
+
+    public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested(); 
+
+        using var connection = await _context.CreateConnectionAsync();
+        const string query = "SELECT * FROM Users WHERE Id = @Id;";
+
+        return await connection.QueryFirstOrDefaultAsync<User>(query, new { Id = id });
+    }
+    
+    public async Task<int?> AddAsync(User user, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested(); 
+
+        using var connection = await _context.CreateConnectionAsync();
+        const string query = @"
+        INSERT INTO Users (Username, FirstName, LastName, Email, Verified, State, PhoneNumber, Sex, Weight, Height, DateOfBirth, CreatedOn, UpdatedOn) 
+        VALUES (@Username, @FirstName, @LastName, @Email, @Verified, @State, @PhoneNumber, @Sex, @Weight, @Height, @DateOfBirth, NOW(), NOW());
+        SELECT LAST_INSERT_ID();";
+
+        try
+        {
+            return await connection.ExecuteScalarAsync<int>(query, user);
+        }
+        catch (MySqlException ex) when (ex.Number == 1062) 
+        {
+            throw new DuplicateEntryException("A user with this email already exists.", ex);
+        }
+    }
+
+    public async Task<bool> UpdateAsync(User user, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested(); 
+
+        using var connection = await _context.CreateConnectionAsync();
+        const string query = @"
+        UPDATE Users 
+        SET Username = @Username, FirstName = @FirstName, LastName = @LastName, Email = @Email, 
+            Verified = @Verified, State = @State, PhoneNumber = @PhoneNumber, Sex = @Sex, 
+            Weight = @Weight, Height = @Height, DateOfBirth = @DateOfBirth, UpdatedOn = NOW()
+        WHERE Id = @Id;";
+
+        int rowsAffected = await connection.ExecuteAsync(query, user);
+
+        return rowsAffected > 0; 
+    }
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        using var connection = await _context.CreateConnectionAsync();
+        const string query = "DELETE FROM Users WHERE Id = @Id;";
+        
+        int rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
+
+        return rowsAffected > 0; 
+    }
+    
+    
+    
+    
+    /*
     public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken) // TODO: Pagination
     {
         cancellationToken.ThrowIfCancellationRequested(); 
@@ -68,8 +143,8 @@ public class UserRepository
 
         using var connection = await _context.CreateConnectionAsync();
         const string query = @"
-        INSERT INTO Users (RoleId, Username, FirstName, LastName, Email, Verified, State, PhoneNumber, Sex, PasswordHash, Weight, Height, DateOfBirth, CreatedOn, UpdatedOn) 
-        VALUES (@RoleId, @Username, @FirstName, @LastName, @Email, @Verified, @State, @PhoneNumber, @Sex, @PasswordHash, @Weight, @Height, @DateOfBirth, NOW(), NOW());
+        INSERT INTO Users (RoleId, Username, FirstName, LastName, Email, Verified, State, PhoneNumber, Sex, Weight, Height, DateOfBirth, CreatedOn, UpdatedOn) 
+        VALUES (@RoleId, @Username, @FirstName, @LastName, @Email, @Verified, @State, @PhoneNumber, @Sex, @Weight, @Height, @DateOfBirth, NOW(), NOW());
         SELECT LAST_INSERT_ID();";
 
         return await connection.ExecuteScalarAsync<int>(query, user);
@@ -83,7 +158,7 @@ public class UserRepository
         const string query = @"
         UPDATE Users 
         SET RoleId = @RoleId, Username = @Username, FirstName = @FirstName, LastName = @LastName, Email = @Email, 
-            Verified = @Verified, State = @State, PhoneNumber = @PhoneNumber, Sex = @Sex, PasswordHash = @PasswordHash, 
+            Verified = @Verified, State = @State, PhoneNumber = @PhoneNumber, Sex = @Sex, 
             Weight = @Weight, Height = @Height, DateOfBirth = @DateOfBirth, UpdatedOn = NOW()
         WHERE Id = @Id;";
 
@@ -103,4 +178,5 @@ public class UserRepository
 
         return rowsAffected > 0; 
     }
+    */
 }
