@@ -48,6 +48,7 @@ app.UseEndpoints(endpoints =>
     DeleteUserEndpoint.Register(endpoints);
     UpdateUserEndpoint.Register(endpoints);
     CreateUserEndpoint.Register(endpoints);
+    AssignUserRoleEndpoint.Register(endpoints);
     
     
     // ROLE ENDPOINTS
@@ -58,7 +59,4 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
-
-// TODO: LAST LOGGED IN (JAK TO VYŘEŠIT??)
-// TODO: PAGINATION, AUTH DELETE
 
