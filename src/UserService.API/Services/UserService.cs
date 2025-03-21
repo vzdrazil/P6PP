@@ -19,17 +19,18 @@ public class UserService
         _roleRepository = roleRepository;
     }
     
-    public async Task<IEnumerable<User>> GetAllUsersAsync(CancellationToken cancellationToken) // TODO: Pagination
+    public async Task<(IEnumerable<User> Users, int TotalCount)> GetAllUsersAsync(int limit, int offset, CancellationToken cancellationToken)
     {
         var roles = await _roleRepository.GetAllAsync(cancellationToken);
-        var users = await _userRepository.GetAllAsync(cancellationToken);
+        var users = await _userRepository.GetAllAsync(limit, offset, cancellationToken);
+        var totalCount = await _userRepository.GetTotalUserCountAsync(cancellationToken);
         
         foreach (var user in users)
         {
             user.Role = roles.FirstOrDefault(x => x.Id == user.RoleId);
         }
         
-        return users;
+        return (users, totalCount);
     }
     
     public async Task<User?> GetUserByIdAsync(int id, CancellationToken cancellationToken)
@@ -73,7 +74,7 @@ public class UserService
         }
         catch (DuplicateEntryException)
         {
-            return null; 
+            return null;
         }
     }
     

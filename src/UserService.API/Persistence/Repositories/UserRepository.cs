@@ -14,7 +14,7 @@ public class UserRepository
         _context = context;
     }
     
-    public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken) // TODO: Pagination
+    public async Task<IEnumerable<User>> GetAllAsync(int limit, int offset, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested(); 
 
@@ -23,7 +23,9 @@ public class UserRepository
             SELECT u.*, 
                    r.Id AS Role_Id, r.Name AS Role_Name, r.Description AS Role_Description 
             FROM Users u
-            JOIN Roles r ON u.RoleId = r.Id;";
+            JOIN Roles r ON u.RoleId = r.Id
+            ORDER BY u.Id
+            LIMIT @Limit OFFSET @Offset";
 
         return await connection.QueryAsync<User, Role, User>(
             query,
@@ -32,9 +34,21 @@ public class UserRepository
                 user.Role = role;
                 return user;
             },
+            new {Limit = limit, Offset = offset},
             splitOn: "Role_Id"
         );
     }
+
+    public async Task<int> GetTotalUserCountAsync(CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested(); 
+
+        using var connection = await _context.CreateConnectionAsync();
+        const string query = "SELECT COUNT(*) FROM Users;";
+        
+        return await connection.ExecuteScalarAsync<int>(query);
+    }
+
 
     public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
