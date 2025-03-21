@@ -33,13 +33,11 @@ namespace AuthService.API.Controllers
 
             ApplicationUser user = null;
 
-            if (!string.IsNullOrEmpty(model.Email))
+            if (!string.IsNullOrEmpty(model.UsernameOrEmail))
             {
-                user = await _userManager.FindByEmailAsync(model.Email);
-            }
-            else if (!string.IsNullOrEmpty(model.UserName))
-            {
-                user = await _userManager.FindByNameAsync(model.UserName);
+                // No manual normalization here
+                user = await _userManager.FindByEmailAsync(model.UsernameOrEmail)
+                       ?? await _userManager.FindByNameAsync(model.UsernameOrEmail);
             }
 
             if (user == null)

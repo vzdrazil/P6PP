@@ -25,28 +25,28 @@ public class RegisterController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var existingUser = await _userManager.FindByEmailAsync(model.Email);
-        if (existingUser != null)
+        var existingEmail = await _userManager.FindByEmailAsync(model.Email);
+        if (existingEmail != null)
             return BadRequest(new ApiResult<object>(null, false, "User with this email already exists."));
-        
-        // Here call the user service to create a user
+
+        var existingUsername = await _userManager.FindByNameAsync(model.UserName);
+        if (existingUsername != null)
+            return BadRequest(new ApiResult<object>(null, false, "User with this username already exists."));
+
         var url = ServiceEndpoints.UserService.CreateUser;
         var newUser = new
         {
             Username = model.UserName,
             FirstName = model.UserName,
             LastName = model.UserName,
-            Email = model.Email,
+            Email = model.Email.ToLower(), 
         };
-        
+
         var response = await _httpClient.PostAsync<object, object>(url, newUser, CancellationToken.None);
-        
+
         if (!response.Success)
             return BadRequest(new ApiResult<object>(null, false, response.Message));
-        
+
         var user = new ApplicationUser
         {
             Email = model.Email,
@@ -58,9 +58,8 @@ public class RegisterController : ControllerBase
 
         if (!result.Succeeded)
             return BadRequest(new ApiResult<object>(result.Errors, false, result.Errors.ToString()));
-        
-        //TODO: při registraci se nevyplní normalizedEmail! díky tomu nefunguje login pro email
-        return Ok(new ApiResult<RegisterResponse> (new RegisterResponse(user.UserId, user.Email)));
+
+        return Ok(new ApiResult<RegisterResponse>(new RegisterResponse(user.UserId, user.Email)));
     }
 
     public class RegisterResponse
