@@ -14,11 +14,11 @@ public class GetUsersHandler
         _userService = userService;
     }
     
-    public async Task<ApiResult<GetUsersResponse>> HandleAsync(int limit, int offset, CancellationToken cancellationToken)
+    public async Task<ApiResult<GetUsersResponse>> HandleAsync(int page, int pageSize, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         
-        var (users, totalCount) = await _userService.GetAllUsersAsync(limit, offset, cancellationToken);
+        var (users, totalCount) = await _userService.GetAllUsersAsync(page, pageSize, cancellationToken);
 
         return users.Any() is false
             ? new ApiResult<GetUsersResponse>(null, false, "Users not found")
@@ -33,10 +33,10 @@ public static class GetUsersEndpoint
         app.MapGet("/api/users",
             async (GetUsersHandler handler,
                 CancellationToken cancellationToken,
-                int limit = 10,
-                int offset = 0) =>
+                int page = 1,
+                int pageSize = 10) =>
             {
-                var result = await handler.HandleAsync(limit, offset, cancellationToken);
+                var result = await handler.HandleAsync(page, pageSize, cancellationToken);
                 
                 return result.Success
                     ? Results.Ok(result)

@@ -14,7 +14,7 @@ public class UserRepository
         _context = context;
     }
     
-    public async Task<IEnumerable<User>> GetAllAsync(int limit, int offset, CancellationToken cancellationToken)
+    public async Task<IEnumerable<User>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested(); 
 
@@ -25,7 +25,9 @@ public class UserRepository
             FROM Users u
             JOIN Roles r ON u.RoleId = r.Id
             ORDER BY u.Id
-            LIMIT @Limit OFFSET @Offset";
+            LIMIT @PageSize OFFSET @Offset";
+
+        var offset = (page - 1) * pageSize;
 
         return await connection.QueryAsync<User, Role, User>(
             query,
@@ -34,7 +36,7 @@ public class UserRepository
                 user.Role = role;
                 return user;
             },
-            new {Limit = limit, Offset = offset},
+            new {PageSize = pageSize, Offset = offset},
             splitOn: "Role_Id"
         );
     }

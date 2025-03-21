@@ -19,10 +19,10 @@ public class UserService
         _roleRepository = roleRepository;
     }
     
-    public async Task<(IEnumerable<User> Users, int TotalCount)> GetAllUsersAsync(int limit, int offset, CancellationToken cancellationToken)
+    public async Task<(IEnumerable<User> Users, int TotalCount)> GetAllUsersAsync(int page, int pageSize, CancellationToken cancellationToken)
     {
         var roles = await _roleRepository.GetAllAsync(cancellationToken);
-        var users = await _userRepository.GetAllAsync(limit, offset, cancellationToken);
+        var users = await _userRepository.GetAllAsync(page, pageSize, cancellationToken);
         var totalCount = await _userRepository.GetTotalUserCountAsync(cancellationToken);
         
         foreach (var user in users)
