@@ -17,7 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // TODO: Fix server version hardcode
-ServerVersion serverVersion = new MariaDbServerVersion("10.5.26");
+ServerVersion serverVersion = new MySqlServerVersion("8.0.35");
 
 String connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 builder.Services.AddDbContext<NotificationDbContext>(

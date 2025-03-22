@@ -32,7 +32,7 @@ namespace NotificationService.API.Services
                 From = new MailAddress(_smtpSettings.From),
                 Subject = emailArgs.Subject,
                 Body = emailArgs.Body,
-                IsBodyHtml = false,
+                IsBodyHtml = true,
             };
             foreach (var to in emailArgs.Address)
             {

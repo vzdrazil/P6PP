@@ -9,6 +9,25 @@ public class TemplateInit
         List<Template> templates = new List<Template>();
         templates.Add(new Template
         {
+            Id = 1,
+            Name = "Registration",
+            Subject = "Potvrzení registrace",
+            Text = @"
+                    <html>
+                        <body style=""font-family: Arial, sans-serif; font-size: 16px; color: #333;"">
+                            <p>Dobrý den <strong>{name}</strong>,</p>
+                            <p>&nbsp;</p>
+                            <p>Vítejte v našem sportcentru! Máme velkou radost, že jste se rozhodli stát se součástí naší komunity.</p>
+                            <p>Abyste mohli naplno využívat všech možností, doporučujeme se přihlásit a prozkoumat svůj nový účet.</p>
+                            <p>Pokud budete mít jakékoli otázky nebo budete potřebovat pomoc, neváhejte nás kontaktovat.</p>
+                            <p>Děkujeme za registraci a přejeme mnoho skvělých zážitků!</p>
+                            <p>S pozdravem,<br/>
+                            <em>Tým podpory zákazníků</em></p>
+                        </body>
+                    </html>" 
+        });
+        templates.Add(new Template
+        {
             Id = 2,
             Name = "Verification",
             Subject = "Ověření e-mailu",
@@ -62,7 +81,6 @@ public class TemplateInit
                    "If you have any questions or need assistance, please do not hesitate to contact us.\n" +
                    "Thank you for registering and we wish you many great experiences!\n\n" +
                    "Customer Support Team",
-            Language = "en"
         });
       
         return templates;
