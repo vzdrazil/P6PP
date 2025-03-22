@@ -9,18 +9,6 @@ public class TemplateInit
         List<Template> templates = new List<Template>();
         templates.Add(new Template
         {
-            Id = 1,
-            Name = "Registration",
-            Subject = "Potvrzení registrace",
-            Text = "Dobrý den {name},\n\nvítejte v našem sportcentru" +
-                   "Máme velkou radost, že jste se rozhodli stát se součástí naší komunity.\n" +
-                   "Abyste mohli naplno využívat všech možností, doporučujeme se přihlásit a prozkoumat svůj nový účet.\n" +
-                   "Pokud budete mít jakékoli otázky nebo budete potřebovat pomoc, neváhejte nás kontaktovat.\n" +
-                   "Děkujeme za registraci a přejeme mnoho skvělých zážitků!\n\n" +
-                   "Tým podpory zákazníků",
-        });
-        templates.Add(new Template
-        {
             Id = 2,
             Name = "Verification",
             Subject = "Ověření e-mailu",
