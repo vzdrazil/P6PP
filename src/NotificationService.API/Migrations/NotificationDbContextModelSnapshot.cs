@@ -59,7 +59,7 @@ namespace NotificationService.API.Migrations
                             Language = "cs",
                             Name = "Registration",
                             Subject = "Potvrzení registrace",
-                            Text = "Dobrý den {name},\n\nvítejte v našem sportcentruMáme velkou radost, že jste se rozhodli stát se součástí naší komunity.\nAbyste mohli naplno využívat všech možností, doporučujeme se přihlásit a prozkoumat svůj nový účet.\nPokud budete mít jakékoli otázky nebo budete potřebovat pomoc, neváhejte nás kontaktovat.\nDěkujeme za registraci a přejeme mnoho skvělých zážitků!\n\nTým podpory zákazníků"
+                            Text = "\r\n                    <html>\r\n                        <body style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333;\">\r\n                            <p>Dobrý den <strong>{name}</strong>,</p>\r\n                            <p>&nbsp;</p>\r\n                            <p>Vítejte v našem sportcentru! Máme velkou radost, že jste se rozhodli stát se součástí naší komunity.</p>\r\n                            <p>Abyste mohli naplno využívat všech možností, doporučujeme se přihlásit a prozkoumat svůj nový účet.</p>\r\n                            <p>Pokud budete mít jakékoli otázky nebo budete potřebovat pomoc, neváhejte nás kontaktovat.</p>\r\n                            <p>Děkujeme za registraci a přejeme mnoho skvělých zážitků!</p>\r\n                            <p>S pozdravem,<br/>\r\n                            <em>Tým podpory zákazníků</em></p>\r\n                        </body>\r\n                    </html>"
                         },
                         new
                         {
@@ -96,7 +96,7 @@ namespace NotificationService.API.Migrations
                         new
                         {
                             Id = 6,
-                            Language = "en",
+                            Language = "cs",
                             Name = "Registration",
                             Subject = "Registration Confirmation",
                             Text = "Hello {name},\n\nwelcome to our sports center.We are very excited that you have decided to become part of our community.\nTo fully utilize all the features, we recommend logging in and exploring your new account.\nIf you have any questions or need assistance, please do not hesitate to contact us.\nThank you for registering and we wish you many great experiences!\n\nCustomer Support Team"
