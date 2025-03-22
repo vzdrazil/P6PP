@@ -1,10 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AuthService.API.Data;
 using AuthService.API.DTO;
 using AuthService.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ReservationSystem.Shared;
 using ReservationSystem.Shared.Clients;
@@ -19,12 +21,15 @@ public class AuthController : Controller
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly NetworkHttpClient _httpClient;
     private readonly IConfiguration _configuration;
+    private readonly AuthDbContext _dbContext;
 
-    public AuthController(UserManager<ApplicationUser> userManager, NetworkHttpClient httpClient, IConfiguration configuration)
+    public AuthController(UserManager<ApplicationUser> userManager, NetworkHttpClient httpClient,
+        IConfiguration configuration, AuthDbContext dbContext)
     {
         _userManager = userManager;
         _httpClient = httpClient;
         _configuration = configuration;
+        _dbContext = dbContext;
     }
 
     [HttpPost("register")]
@@ -44,7 +49,7 @@ public class AuthController : Controller
             Username = model.UserName,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            Email = model.Email.ToLower(), 
+            Email = model.Email.ToLower(),
         };
 
         var response = await _httpClient.PostAsync<object, object>(url, newUser, CancellationToken.None);
@@ -64,9 +69,9 @@ public class AuthController : Controller
         if (!result.Succeeded)
             return BadRequest(new ApiResult<object>(result.Errors, false, result.Errors.ToString()));
 
-        return Ok(new ApiResult<object>(new { Id = user.UserId } ));
+        return Ok(new ApiResult<object>(new { Id = user.UserId }));
     }
-    
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
@@ -114,5 +119,28 @@ public class AuthController : Controller
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.UserId == model.UserId);
+
+        if (user == null)
+            return BadRequest(new ApiResult<object>(null, false, "User with this ID does not exist."));
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+        var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+
+        if (!result.Succeeded)
+            return BadRequest(new ApiResult<object>(result.Errors, false, result.Errors.ToString()));
+
+        return Ok(new ApiResult<object>(new { UserId = user.UserId, Email = user.Email }, true,
+            "Password reset successfully."));
     }
 }
