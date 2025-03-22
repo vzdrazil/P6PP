@@ -50,9 +50,10 @@ app.UseRouting();
 
 // All endpoints here are defined in Features folder
 // Here you can register your endpoints, for example:
-app.UseEndpoints(enpoints =>
+app.UseEndpoints(endpoints =>
 {
-    SendEmailEndpoint.SendEmail(enpoints);
+    SendEmailEndpoint.SendEmail(endpoints);
+    SendRegistrationEmailEndpoint.SendRegistrationEmail(endpoints);
 });
 
 app.Run();
