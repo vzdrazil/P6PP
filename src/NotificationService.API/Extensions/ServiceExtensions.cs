@@ -15,7 +15,7 @@ public static class ServiceExtensions
         services.AddScoped<SendEmailHandler>();
 
         // Register TemplateAppService
-        services.AddSingleton<TemplateAppService>();
+        services.AddScoped<TemplateAppService>();
 
         // Register RegisterEmail Services
         services.AddSingleton<SendRegistrationEmailValidator>();
