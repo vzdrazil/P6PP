@@ -81,6 +81,7 @@ public class TemplateInit
                    "If you have any questions or need assistance, please do not hesitate to contact us.\n" +
                    "Thank you for registering and we wish you many great experiences!\n\n" +
                    "Customer Support Team",
+            Language = "en"
         });
       
         return templates;
