@@ -10,14 +10,16 @@ public static class ServiceExtensions
         // Register MailAppService
         services.AddSingleton<MailAppService>();
 
-        // Register Validators
+        // Register SendEmail Services
         services.AddSingleton<SendEmailRequestValidator>();
-
-        // Register Handlers
         services.AddScoped<SendEmailHandler>();
 
-        // Register other services if needed
-        // services.AddScoped<OtherService>();
+        // Register TemplateAppService
+        services.AddSingleton<TemplateAppService>();
+
+        // Register RegisterEmail Services
+        services.AddSingleton<SendRegistrationEmailValidator>();
+        services.AddScoped<SendRegistrationEmailHandler>();
     }
 }
 
