@@ -62,18 +62,6 @@ services:
       retries: 5
       timeout: 5s
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: phpmyadmin
-    environment:
-      - PMA_HOST=mysql
-    ports:
-      - "8080:80"
-    networks:
-      - backend
-    depends_on:
-      - mysql
-
 volumes:
   mysql_data:
 
