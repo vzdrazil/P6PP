@@ -1,59 +1,59 @@
 using BookingPayments.API.Application.Abstraction;
+using BookingPayments.API.Data;
 using BookingPayments.API.Entities;
-using BookingPayments.API.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingPayments.API.Application.Implementation
+namespace BookingPayments.API.Application.Implementation;
+
+public sealed class RoomAppService : IRoomAppService
 {
-    public class RoomAppService : IRoomAppService
+    private readonly BookPayDbContext _context;
+
+    public RoomAppService(BookPayDbContext context)
     {
-        private readonly BookPayDbContext _context;
+        _context = context;
+    }
 
-        public RoomAppService(BookPayDbContext context)
-        {
-            _context = context;
-        }
+    public async Task<IList<Room>> GetAllAsync()
+    {
+        return await _context.Rooms.Include(r => r.Status).ToListAsync();
+    }
 
-        public IList<Rooms> Select()
-        {
-            return _context.Rooms.Include(r => r.Status).ToList();
-        }
+    public async Task<Room?> GetByIdAsync(int id)
+    {
+        return await _context.Rooms.SingleOrDefaultAsync(r => r.Id == id);
+    }
 
-        public void Create(Rooms room)
-        {
-            _context.Rooms.Add(room);
-            _context.SaveChanges();
-        }
+    public async Task CreateAsync(Room room)
+    {
+        _context.Rooms.Add(room);
+        await _context.SaveChangesAsync();
+    }
 
-        public bool Delete(int id)
-        {
-            var room = _context.Rooms.FirstOrDefault(r => r.Id == id);
-            if (room != null)
-            {
-                _context.Rooms.Remove(room);
-                _context.SaveChanges();
-                return true;
-            }
+    public async Task<bool> UpdateAsync(Room room)
+    {
+        var existingRoom = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == room.Id);
+
+        if (existingRoom is null)
             return false;
-        }
 
-        public Rooms? GetById(int id)
-        {
-            return _context.Rooms.FirstOrDefault(r => r.Id == id);
-        }
+        existingRoom.Name = room.Name;
+        existingRoom.Capacity = room.Capacity;
+        existingRoom.Status = room.Status;
 
-        public bool Edit(Rooms room)
-        {
-            var existingRoom = _context.Rooms.FirstOrDefault(r => r.Id == room.Id);
-            if (existingRoom == null)
-                return false;
+        await _context.SaveChangesAsync();
+        return true;
+    }
 
-            existingRoom.RoomName = room.RoomName;
-            existingRoom.RoomCapacity = room.RoomCapacity;
-            existingRoom.StatusId = room.StatusId;
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var room = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == id);
 
-            _context.SaveChanges();
-            return true;
-        }
+        if (room is null)
+            return false;
+
+        _context.Rooms.Remove(room);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

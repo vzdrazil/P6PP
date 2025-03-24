@@ -1,8 +1,12 @@
+using BookingPayments.API.Entities;
+
+namespace BookingPayments.API.Application.Abstraction;
+
 public interface IRoomAppService
 {
-    IList<Rooms> Select();
-    void Create(Rooms room);
-    bool Delete(int id);
-    Rooms? GetById(int id);
-    bool Edit(Rooms room);
+    Task<IList<Room>> GetAllAsync();
+    Task<Room?> GetByIdAsync(int id);
+    Task CreateAsync(Room room);
+    Task<bool> UpdateAsync(Room room);
+    Task<bool> DeleteAsync(int id);
 }
