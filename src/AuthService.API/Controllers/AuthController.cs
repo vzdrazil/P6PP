@@ -89,11 +89,11 @@ public class AuthController : Controller
         }
 
         if (user == null)
-            return Unauthorized(new ApiResult<object>(null, false, "Invalid username/email or password."));
+            return BadRequest(new ApiResult<object>(null, false, "Invalid username/email or password."));
 
         var result = await _userManager.CheckPasswordAsync(user, model.Password);
         if (!result)
-            return Unauthorized(new ApiResult<object>(null, false, "Invalid username/email or password."));
+            return BadRequest(new ApiResult<object>(null, false, "Invalid username/email or password."));
 
         var token = GenerateJwtToken(user);
         return Ok(new ApiResult<string>(token));
