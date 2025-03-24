@@ -6,8 +6,8 @@ using BookingPayments.API.Entities.Seeding;
 
 public class BookPayDbContext : DbContext
 {
-    public DbSet<Bookings> Bookings { get; set; }
-    public DbSet<Rooms> Rooms { get; set; }
+    public DbSet<Booking> Bookings { get; set; }
+    public DbSet<Room> Rooms { get; set; }
     public DbSet<RoomStatus> RoomStatuses { get; set; }
     public DbSet<Discounts> Discounts { get; set; }
     public DbSet<BookingStatus> BookingStatus { get; set; }
