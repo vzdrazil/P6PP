@@ -16,7 +16,7 @@ public sealed class RoomAppService : IRoomAppService
 
     public async Task<IList<Room>> GetAllAsync()
     {
-        return await _context.Rooms.Include(r => r.Status).ToListAsync();
+        return await _context.Rooms.ToListAsync();
     }
 
     public async Task<Room?> GetByIdAsync(int id)
