@@ -1,3 +1,4 @@
+using BookingPayments.API.Data.Seeding;
 using BookingPayments.API.Entities;
 using Microsoft.EntityFrameworkCore;
 namespace BookingPayments.API.Data;
@@ -18,25 +19,16 @@ public class BookPayDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Discount>().HasData(DiscountsInit.GetDiscounts());
 
-        var bookingStatusInit = new BookingStatusInit();
-        modelBuilder.Entity<BookingStatus>().HasData(bookingStatusInit.GetBookingStatuses());
+        modelBuilder.Entity<Room>().HasData(RoomsInit.GetRooms());
 
-        var discountsInit = new DiscountsInit();
-        modelBuilder.Entity<Discounts>().HasData(discountsInit.GetDiscounts());
+        modelBuilder.Entity<Service>().HasData(ServicesInit.GetServices());
 
-        var roomsInit = new RoomsInit();
-        modelBuilder.Entity<Rooms>().HasData(roomsInit.GetRooms());
-
-        var roomStatusInit = new RoomStatusInit();
-        modelBuilder.Entity<RoomStatus>().HasData(roomStatusInit.GetRoomStatuses());
-
-        var servicesInit = new ServicesInit();
+        modelBuilder.Entity<Booking>().HasData(BookingsInit.GetBookings());
         modelBuilder.Entity<Services>().HasData(servicesInit.GetServices());
 
-        var bookingsInit = new BookingsInit();
-        modelBuilder.Entity<Bookings>().HasData(bookingsInit.GetBookings());
+        base.OnModelCreating(modelBuilder);
     }
 
 }
