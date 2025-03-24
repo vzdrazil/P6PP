@@ -1,22 +1,18 @@
 using BookingPayments.API.Data.Seeding;
 using BookingPayments.API.Entities;
 using Microsoft.EntityFrameworkCore;
-namespace BookingPayments.API.Data;
-using BookingPayments.API.Entities.Seeding;
 
-public class BookPayDbContext : DbContext
+namespace BookingPayments.API.Data;
+
+public sealed class BookPayDbContext : DbContext
 {
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Room> Rooms { get; set; }
-    public DbSet<RoomStatus> RoomStatuses { get; set; }
-    public DbSet<Discounts> Discounts { get; set; }
-    public DbSet<BookingStatus> BookingStatus { get; set; }
-    public DbSet<Services> Services { get; set; }
-    
-    public BookPayDbContext(DbContextOptions<BookPayDbContext> options) : base(options)
-    {
-    }
-    
+    public DbSet<Discount> Discounts { get; set; }
+    public DbSet<Service> Services { get; set; }
+
+    public BookPayDbContext(DbContextOptions<BookPayDbContext> options) : base(options) { }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Discount>().HasData(DiscountsInit.GetDiscounts());
@@ -26,9 +22,7 @@ public class BookPayDbContext : DbContext
         modelBuilder.Entity<Service>().HasData(ServicesInit.GetServices());
 
         modelBuilder.Entity<Booking>().HasData(BookingsInit.GetBookings());
-        modelBuilder.Entity<Services>().HasData(servicesInit.GetServices());
 
         base.OnModelCreating(modelBuilder);
     }
-
 }

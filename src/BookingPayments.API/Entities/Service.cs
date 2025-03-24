@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BookingPayments.API.Entities;
 
 
-[Table(nameof(Services))]
-public class Services : Entity<int>
+[Table(nameof(Service))]
+public sealed class Service : Entity<int>
 {
     public int TrainerId { get; set; }
     public int Price { get; set; }
