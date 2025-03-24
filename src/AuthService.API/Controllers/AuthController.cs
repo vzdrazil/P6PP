@@ -12,6 +12,7 @@ using ReservationSystem.Shared;
 using ReservationSystem.Shared.Clients;
 using ReservationSystem.Shared.Results;
 
+
 namespace AuthService.API.Controllers;
 
 [Route("api/auth")]
@@ -142,5 +143,49 @@ public class AuthController : Controller
 
         return Ok(new ApiResult<object>(new { UserId = user.UserId, Email = user.Email }, true,
             "Password reset successfully."));
+    }
+    
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout([FromBody] LogoutModel model)
+    {
+        try
+        {
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            Console.WriteLine($"Token: {token}");
+            
+            if (string.IsNullOrEmpty(token))
+            {
+                Console.WriteLine("Error: Token is missing in the request headers.");
+                return BadRequest(new ApiResult<object>(null, false, "Token is missing."));
+            }
+
+            var user = await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.UserId == model.UserId);
+            
+            Console.WriteLine($"UserId: {user.UserId}");
+            
+            if (user == null)
+            {
+                Console.WriteLine("Error: User is not authenticated.");
+                return Unauthorized(new ApiResult<object>(null, false, "User is not authenticated."));
+            }
+            
+            var tokenBlackList = new TokenBlackList
+            {
+                UserId = user.Id,
+                Token = token,
+                ExpirationDate = DateTime.UtcNow.AddMinutes(15)
+            };
+
+            _dbContext.TokenBlackLists.Add(tokenBlackList);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new ApiResult<object>(null, true, "User logged out successfully."));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during logout: {ex}");
+            return StatusCode(500, new ApiResult<object>(null, false, "An error occurred during logout."));
+        }
     }
 }
