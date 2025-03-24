@@ -20,9 +20,12 @@ builder.Services.AddSwaggerGen();
 ServerVersion serverVersion = new MySqlServerVersion("8.0.35");
 
 String connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+Console.WriteLine("Connection string TEST Notification: " + connectionString);
 builder.Services.AddDbContext<NotificationDbContext>(
     optionsBuilder => optionsBuilder.UseMySql(connectionString, serverVersion)
 );
+
+
 
 // Register services
 builder.Services.RegisterServices(builder.Configuration);
@@ -36,7 +39,28 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    
+    var context = services.GetRequiredService<NotificationDbContext>();
+    
+    try
+    {
+        context.Database.Migrate();
+        Console.WriteLine("✅ Database Migrations Applied Successfully.");
+        
+        // Seed roles after ensuring database schema exists
+        /*
+        var roleManager = services.GetRequiredService<RoleManager<Role>>();
+        var roleSeeder = new RoleSeeder(roleManager);
+        await roleSeeder.SeedRolesAsync();
+        */
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error applying migrations: {ex.Message}");
+    }
 }
+
+
 
 if (!app.Environment.IsDevelopment())
 {
