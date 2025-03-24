@@ -2,8 +2,7 @@ using BookingPayments.API.Entities.Interfaces;
 
 namespace BookingPayments.API.Entities;
 
-public class Entity<TKey> : IEntity<TKey>
+public abstract class Entity<TKey> : IEntity<TKey>
 {
-    public TKey Id { get; set; }
-    
+    public TKey Id { get; set; } = default!;
 }
