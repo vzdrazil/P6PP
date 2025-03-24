@@ -5,7 +5,8 @@ using System.Net;
 
 namespace BookingPayments.API.Controllers;
 
-
+[ApiController]
+[Route("api/rooms")]
 //[Authorize(Roles = nameof(Roles.Admin) + ", " + nameof(Roles.Instructor))]
 public class RoomsController : Controller
 {
@@ -19,17 +20,17 @@ public class RoomsController : Controller
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<Room>))]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized, Type = typeof(ProblemDetails))]
-    public async Task<IActionResult> SelectAll()
+    public async Task<IActionResult> GetAll()
     {
         var rooms = await _roomAppService.GetAllAsync();
         return Ok(rooms);
     }
 
-    [HttpGet]
+    [HttpGet("{roomId}")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Room))]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized, Type = typeof(ProblemDetails))]
     [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ProblemDetails))]
-    public async Task<IActionResult> Select(int roomId)
+    public async Task<IActionResult> Get(int roomId)
     {
         var room = await _roomAppService.GetByIdAsync(roomId);
 
