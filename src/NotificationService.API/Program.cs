@@ -46,13 +46,6 @@ using (var scope = app.Services.CreateScope())
     {
         context.Database.Migrate();
         Console.WriteLine("✅ Database Migrations Applied Successfully.");
-        
-        // Seed roles after ensuring database schema exists
-        /*
-        var roleManager = services.GetRequiredService<RoleManager<Role>>();
-        var roleSeeder = new RoleSeeder(roleManager);
-        await roleSeeder.SeedRolesAsync();
-        */
     }
     catch (Exception ex)
     {
