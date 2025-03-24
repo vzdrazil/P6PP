@@ -16,12 +16,16 @@ public sealed class RoomAppService : IRoomAppService
 
     public async Task<IList<Room>> GetAllAsync()
     {
-        return await _context.Rooms.ToListAsync();
+        return await _context.Rooms
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task<Room?> GetByIdAsync(int id)
     {
-        return await _context.Rooms.SingleOrDefaultAsync(r => r.Id == id);
+        return await _context.Rooms
+            .AsNoTracking()
+            .SingleOrDefaultAsync(r => r.Id == id);
     }
 
     public async Task CreateAsync(Room room)
