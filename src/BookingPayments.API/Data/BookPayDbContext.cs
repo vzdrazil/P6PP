@@ -7,6 +7,7 @@ public class BookPayDbContext : DbContext
 {
     public DbSet<Bookings> Bookings { get; set; }
     public DbSet<Rooms> Rooms { get; set; }
+    public DbSet<RoomStatus> RoomStatuses { get; set; }
     public DbSet<Discounts> Discounts { get; set; }
     public DbSet<BookingStatus> BookingStatus { get; set; }
     public DbSet<Services> Services { get; set; }
@@ -27,6 +28,9 @@ public class BookPayDbContext : DbContext
 
         var roomsInit = new RoomsInit();
         modelBuilder.Entity<Rooms>().HasData(roomsInit.GetRooms());
+
+        var roomStatusInit = new RoomStatusInit();
+        modelBuilder.Entity<RoomStatus>().HasData(roomStatusInit.GetRoomStatuses());
 
         var servicesInit = new ServicesInit();
         modelBuilder.Entity<Services>().HasData(servicesInit.GetServices());

@@ -93,9 +93,9 @@ namespace BookingPayments.API.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDate = new DateTime(2025, 3, 18, 22, 12, 14, 690, DateTimeKind.Local).AddTicks(2770),
-                            CheckInDate = new DateTime(2025, 3, 19, 22, 12, 14, 690, DateTimeKind.Local).AddTicks(2770),
-                            CheckOutDate = new DateTime(2025, 3, 20, 22, 12, 14, 690, DateTimeKind.Local).AddTicks(2770),
+                            BookingDate = new DateTime(2025, 3, 23, 14, 2, 47, 833, DateTimeKind.Local).AddTicks(7493),
+                            CheckInDate = new DateTime(2025, 3, 24, 14, 2, 47, 833, DateTimeKind.Local).AddTicks(7498),
+                            CheckOutDate = new DateTime(2025, 3, 25, 14, 2, 47, 833, DateTimeKind.Local).AddTicks(7503),
                             Price = 150,
                             ServiceId = 1,
                             StatusId = 1,
@@ -104,9 +104,9 @@ namespace BookingPayments.API.Migrations
                         new
                         {
                             Id = 2,
-                            BookingDate = new DateTime(2025, 3, 18, 22, 12, 14, 690, DateTimeKind.Local).AddTicks(2770),
-                            CheckInDate = new DateTime(2025, 3, 21, 22, 12, 14, 690, DateTimeKind.Local).AddTicks(2780),
-                            CheckOutDate = new DateTime(2025, 3, 22, 22, 12, 14, 690, DateTimeKind.Local).AddTicks(2780),
+                            BookingDate = new DateTime(2025, 3, 23, 14, 2, 47, 833, DateTimeKind.Local).AddTicks(7514),
+                            CheckInDate = new DateTime(2025, 3, 26, 14, 2, 47, 833, DateTimeKind.Local).AddTicks(7517),
+                            CheckOutDate = new DateTime(2025, 3, 27, 14, 2, 47, 833, DateTimeKind.Local).AddTicks(7519),
                             Price = 250,
                             ServiceId = 2,
                             StatusId = 2,
@@ -144,16 +144,54 @@ namespace BookingPayments.API.Migrations
                             Id = 1,
                             DiscountPercentage = 10,
                             IsValid = true,
-                            ValidFrom = new DateTime(2025, 3, 18, 22, 12, 14, 690, DateTimeKind.Local).AddTicks(2680),
-                            ValidTo = new DateTime(2025, 4, 18, 22, 12, 14, 690, DateTimeKind.Local).AddTicks(2710)
+                            ValidFrom = new DateTime(2025, 3, 23, 14, 2, 47, 833, DateTimeKind.Local).AddTicks(7129),
+                            ValidTo = new DateTime(2025, 4, 23, 14, 2, 47, 833, DateTimeKind.Local).AddTicks(7206)
                         },
                         new
                         {
                             Id = 2,
                             DiscountPercentage = 20,
                             IsValid = true,
-                            ValidFrom = new DateTime(2025, 3, 18, 22, 12, 14, 690, DateTimeKind.Local).AddTicks(2720),
-                            ValidTo = new DateTime(2025, 4, 18, 22, 12, 14, 690, DateTimeKind.Local).AddTicks(2720)
+                            ValidFrom = new DateTime(2025, 3, 23, 14, 2, 47, 833, DateTimeKind.Local).AddTicks(7219),
+                            ValidTo = new DateTime(2025, 4, 23, 14, 2, 47, 833, DateTimeKind.Local).AddTicks(7221)
+                        });
+                });
+
+            modelBuilder.Entity("BookingPayments.API.Entities.RoomStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Status")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RoomStatus");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Status = "Occupied"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Status = "Reserved"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Status = "Maintenance"
                         });
                 });
 
@@ -165,10 +203,18 @@ namespace BookingPayments.API.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("RoomCapacity")
+                        .HasColumnType("int");
+
                     b.Property<string>("RoomName")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("Rooms");
 
@@ -176,12 +222,30 @@ namespace BookingPayments.API.Migrations
                         new
                         {
                             Id = 1,
-                            RoomName = "Room A"
+                            RoomCapacity = 20,
+                            RoomName = "Room A",
+                            StatusId = 1
                         },
                         new
                         {
                             Id = 2,
-                            RoomName = "Room B"
+                            RoomCapacity = 15,
+                            RoomName = "Room B",
+                            StatusId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            RoomCapacity = 10,
+                            RoomName = "Room C",
+                            StatusId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            RoomCapacity = 25,
+                            RoomName = "Room D",
+                            StatusId = 4
                         });
                 });
 
@@ -226,6 +290,17 @@ namespace BookingPayments.API.Migrations
                             ServiceName = "Service B",
                             TrainerId = 2
                         });
+                });
+
+            modelBuilder.Entity("BookingPayments.API.Entities.Rooms", b =>
+                {
+                    b.HasOne("BookingPayments.API.Entities.RoomStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Status");
                 });
 #pragma warning restore 612, 618
         }
