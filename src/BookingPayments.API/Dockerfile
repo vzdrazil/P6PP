@@ -1,5 +1,5 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+USER 1000
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -7,10 +7,11 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["BookingPayments.API.csproj", "./"]
-RUN dotnet restore "BookingPayments.API.csproj"
+COPY src/BookingPayments.API/BookingPayments.API.csproj src/BookingPayments.API/
+COPY libs/ReservationSystem.Shared/ReservationSystem.Shared.csproj libs/ReservationSystem.Shared/
+RUN dotnet restore "src/BookingPayments.API/BookingPayments.API.csproj"
 COPY . .
-WORKDIR "/src/"
+WORKDIR "/src/src/BookingPayments.API"
 RUN dotnet build "BookingPayments.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

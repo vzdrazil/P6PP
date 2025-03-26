@@ -29,6 +29,22 @@ services:
     networks:
       - backend
 
+  booking-service:
+    build:
+      context: .
+      dockerfile: src/BookingPayments.API/Dockerfile
+    container_name: booking-service
+    ports:
+      - "8080:8081"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=auth_db;User=root;Password=password123;
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - backend
+  
+
   mysql:
     image: mysql:latest
     container_name: mysql_local
