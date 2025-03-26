@@ -15,7 +15,7 @@ public sealed class Booking : Entity<int>
 
     [ForeignKey(nameof(Service))]
     public int ServiceId { get; set; }
-    public Service Service { get; set; }
+    //public Service Service { get; set; } Navigational property
 
     [ForeignKey(nameof(User))]
     public int UserId { get; set; }

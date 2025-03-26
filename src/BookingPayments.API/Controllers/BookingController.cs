@@ -1,5 +1,5 @@
 ﻿using BookingPayments.API.Application.Abstraction;
-using BookingPayments.API.DTOS;
+using BookingPayments.API.DTOs.BookingDTOs;
 using BookingPayments.API.Entities;
 using BookingPayments.API.Entities.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +22,15 @@ namespace BookingPayments.API.Controllers
         public async Task<IActionResult> GetBookings(int userId)
         {
             var bookings = await _bookingService.GetBookingsAsync(userId);
-            return Ok(bookings);
+            return Ok(bookings.Select(b => new ResponseBookingDTO
+            (
+                b.Id,
+                b.CheckInDate,
+                b.CheckOutDate,
+                b.Price,
+                b.ServiceId,
+                b.Status.ToString()
+            )));
         }
 
 
@@ -30,7 +38,17 @@ namespace BookingPayments.API.Controllers
         public async Task<IActionResult> GetBooking(int bookingId)
         {
             var booking = await _bookingService.GetBookingAsync(bookingId);
-            return booking is not null ? Ok(booking) : NotFound();
+            if (booking == null) return NotFound();
+            var response = new ResponseBookingDTO
+            (
+                booking.Id,
+                booking.CheckInDate,
+                booking.CheckOutDate,
+                booking.Price,
+                booking.ServiceId,
+                booking.Status.ToString()
+            );
+            return Ok(response);
         }
 
         [HttpPost]
@@ -39,31 +57,48 @@ namespace BookingPayments.API.Controllers
             var booking = new Booking
             {
                 BookingDate = DateTime.Now,
-                CheckInDate = DateTime.Now.AddDays(3),
-                CheckOutDate = DateTime.Now.AddDays(5),
-                Price = 150,
-                Status = BookingStatus.Confirmed,
+                CheckInDate = bookingDTO.CheckInDate,
+                CheckOutDate = bookingDTO.CheckOutDate,
+                Price = 150, // Get price from service table
+                Status = BookingStatus.Pending,
                 ServiceId = 1,
             };
 
             var b = await _bookingService.CreateBookingAsync(booking);
-            return CreatedAtAction(nameof(GetBooking), new { bookingId = b.Id }, booking);
+            var response = new ResponseBookingDTO
+            (
+                b.Id,
+                b.CheckInDate,
+                b.CheckOutDate,
+                b.Price,
+                b.ServiceId,
+                b.Status.ToString()
+            );
+            return CreatedAtAction(nameof(GetBooking), new { bookingId = b.Id }, response);
         }
 
-        [HttpPut("{bookingId:int}")]
-        public async Task<IActionResult> UpdateBooking(int bookingId, CreateBookingDTO bookingDTO) // temporary DTO
+        [HttpPut]
+        public async Task<IActionResult> UpdateBooking(UpdateBookingDTO bookingDTO)
         {
             var booking = new Booking
             {
-                BookingDate = DateTime.Now,
+                Id = bookingDTO.Id,
                 CheckInDate = bookingDTO.CheckInDate,
                 CheckOutDate = bookingDTO.CheckOutDate,
-                Price = 150,
-                Status = BookingStatus.Cancelled,
-                ServiceId = 1,
+                Status = BookingStatus.Pending,
             };
             var updatedBooking = await _bookingService.UpdateBookingAsync(booking);
-            return Ok(updatedBooking);
+            if (updatedBooking == null) return NotFound();
+            var response = new ResponseBookingDTO
+            (
+                updatedBooking.Id,
+                updatedBooking.CheckInDate,
+                updatedBooking.CheckOutDate,
+                updatedBooking.Price,
+                updatedBooking.ServiceId,
+                updatedBooking.Status.ToString()
+            );
+            return Ok(response);
         }
 
         [HttpDelete("{bookingId:int}")]
@@ -80,7 +115,15 @@ namespace BookingPayments.API.Controllers
         {
             var path = HttpContext.Request.Path.Value;
             var bookings = await _bookingService.GetBookingsAsync(userId, path!.Split("/")[^1]);
-            return Ok(bookings);
+            return Ok(bookings.Select(b => 
+                        new ResponseBookingDTO (
+                            b.Id,
+                            b.CheckInDate,
+                            b.CheckOutDate,
+                            b.Price,
+                            b.ServiceId,
+                            b.Status.ToString()
+                        )));
         }
 
 
