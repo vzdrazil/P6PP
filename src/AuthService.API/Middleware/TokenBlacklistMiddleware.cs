@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using AuthService.API.Data;
 
 namespace AuthService.API.Middleware
