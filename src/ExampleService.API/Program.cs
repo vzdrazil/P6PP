@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure port here + launchSettings.json ( + later Dockerfile EXPOSE XXXX)
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(5187);
+    options.ListenAnyIP(5188);
 });
 
 builder.Services.AddEndpointsApiExplorer();
