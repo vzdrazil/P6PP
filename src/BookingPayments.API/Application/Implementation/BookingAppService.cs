@@ -1,15 +1,16 @@
 ﻿using System.Linq.Expressions;
-using BookingPayments.API.Data.Repositories.Abtractions;
+using BookingPayments.API.Application.Abstraction;
+using BookingPayments.API.Data;
 using BookingPayments.API.Entities;
 using BookingPayments.API.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingPayments.API.Data.Repositories;
+namespace BookingPayments.API.Application.Implementation;
 
-public class BookingRepository : IBookingRepository
+public class BookingAppService : IBookingAppService
 {
     private readonly BookPayDbContext _context;
-    public BookingRepository(BookPayDbContext context)
+    public BookingAppService(BookPayDbContext context)
     {
         _context = context;
     }
@@ -38,6 +39,7 @@ public class BookingRepository : IBookingRepository
 
     public Task<List<Booking>> GetBookingsAsync(int userId, string? condition)
     {
+        // for testing purposes
         Expression<Func<Booking, bool>> predicate = condition switch
         {
             "upcoming-bookings" => b => b.CheckInDate > DateTime.Now,
@@ -50,7 +52,6 @@ public class BookingRepository : IBookingRepository
                 .ToListAsync();
     }
 
-    // add exitence check
     public async Task<Booking> UpdateBookingAsync(Booking booking)
     {
         _context.Bookings.Update(booking);

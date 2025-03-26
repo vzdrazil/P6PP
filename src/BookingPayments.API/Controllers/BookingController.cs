@@ -1,4 +1,4 @@
-﻿using BookingPayments.API.Data.Repositories.Abtractions;
+﻿using BookingPayments.API.Application.Abstraction;
 using BookingPayments.API.DTOS;
 using BookingPayments.API.Entities;
 using BookingPayments.API.Entities.Enums;
@@ -12,16 +12,16 @@ namespace BookingPayments.API.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
-        private readonly IBookingRepository _bookingRepository;
-        public BookingController(IBookingRepository bookingRepository)
+        private readonly IBookingAppService _bookingService;
+        public BookingController(IBookingAppService bookingService)
         {
-            _bookingRepository = bookingRepository;
+            _bookingService = bookingService;
         }
 
         [HttpGet("user/{userId:int}")]
         public async Task<IActionResult> GetBookings(int userId)
         {
-            var bookings = await _bookingRepository.GetBookingsAsync(userId);
+            var bookings = await _bookingService.GetBookingsAsync(userId);
             return Ok(bookings);
         }
 
@@ -29,7 +29,7 @@ namespace BookingPayments.API.Controllers
         [HttpGet("{bookingId:int}")]
         public async Task<IActionResult> GetBooking(int bookingId)
         {
-            var booking = await _bookingRepository.GetBookingAsync(bookingId);
+            var booking = await _bookingService.GetBookingAsync(bookingId);
             return booking is not null ? Ok(booking) : NotFound();
         }
 
@@ -46,7 +46,7 @@ namespace BookingPayments.API.Controllers
                 ServiceId = 1,
             };
 
-            var b = await _bookingRepository.CreateBookingAsync(booking);
+            var b = await _bookingService.CreateBookingAsync(booking);
             return CreatedAtAction(nameof(GetBooking), new { bookingId = b.Id }, booking);
         }
 
@@ -62,24 +62,24 @@ namespace BookingPayments.API.Controllers
                 Status = BookingStatus.Cancelled,
                 ServiceId = 1,
             };
-            var updatedBooking = await _bookingRepository.UpdateBookingAsync(booking);
+            var updatedBooking = await _bookingService.UpdateBookingAsync(booking);
             return Ok(updatedBooking);
         }
 
         [HttpDelete("{bookingId:int}")]
         public async Task<IActionResult> DeleteBookingAsync(int bookingId)
         {
-            return await _bookingRepository.DeleteBookingAsync(bookingId) ? Ok() : NotFound();
+            return await _bookingService.DeleteBookingAsync(bookingId) ? Ok() : NotFound();
         }
 
-
+        // testing
         [HttpGet("user/{userId:int}/upcoming-bookings")]
         [HttpGet("user/{userId:int}/past-bookings")]
         [HttpGet("user/{userId:int}/cancelled-bookings")]
         public async Task<IActionResult> FilterBookings(int userId)
         {
             var path = HttpContext.Request.Path.Value;
-            var bookings = await _bookingRepository.GetBookingsAsync(userId, path!.Split("/")[^1]);
+            var bookings = await _bookingService.GetBookingsAsync(userId, path!.Split("/")[^1]);
             return Ok(bookings);
         }
 
