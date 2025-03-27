@@ -4,6 +4,7 @@ using BookingPayments.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingPayments.API.Migrations
 {
     [DbContext(typeof(BookPayDbContext))]
-    partial class BookPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250327184914_Entity Update")]
+    partial class EntityUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,7 +53,7 @@ namespace BookingPayments.API.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDate = new DateTime(2025, 3, 27, 20, 18, 53, 791, DateTimeKind.Local).AddTicks(9565),
+                            BookingDate = new DateTime(2025, 3, 27, 19, 49, 14, 107, DateTimeKind.Local).AddTicks(364),
                             ServiceId = 1,
                             Status = 0,
                             UserId = 1
@@ -58,7 +61,7 @@ namespace BookingPayments.API.Migrations
                         new
                         {
                             Id = 2,
-                            BookingDate = new DateTime(2025, 3, 27, 20, 18, 53, 791, DateTimeKind.Local).AddTicks(9572),
+                            BookingDate = new DateTime(2025, 3, 27, 19, 49, 14, 107, DateTimeKind.Local).AddTicks(368),
                             ServiceId = 2,
                             Status = 1,
                             UserId = 2
@@ -95,16 +98,16 @@ namespace BookingPayments.API.Migrations
                             Id = 1,
                             IsValid = true,
                             Percentage = 10,
-                            ValidFrom = new DateTime(2025, 3, 27, 20, 18, 53, 791, DateTimeKind.Local).AddTicks(9093),
-                            ValidTo = new DateTime(2025, 4, 27, 20, 18, 53, 791, DateTimeKind.Local).AddTicks(9152)
+                            ValidFrom = new DateTime(2025, 3, 27, 19, 49, 14, 106, DateTimeKind.Local).AddTicks(9877),
+                            ValidTo = new DateTime(2025, 4, 27, 19, 49, 14, 106, DateTimeKind.Local).AddTicks(9929)
                         },
                         new
                         {
                             Id = 2,
                             IsValid = true,
                             Percentage = 20,
-                            ValidFrom = new DateTime(2025, 3, 27, 20, 18, 53, 791, DateTimeKind.Local).AddTicks(9160),
-                            ValidTo = new DateTime(2025, 4, 27, 20, 18, 53, 791, DateTimeKind.Local).AddTicks(9162)
+                            ValidFrom = new DateTime(2025, 3, 27, 19, 49, 14, 106, DateTimeKind.Local).AddTicks(9937),
+                            ValidTo = new DateTime(2025, 4, 27, 19, 49, 14, 106, DateTimeKind.Local).AddTicks(9939)
                         });
                 });
 
@@ -168,7 +171,10 @@ namespace BookingPayments.API.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("End")
+                    b.Property<DateTime>("CheckInDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("CheckOutDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsCancelled")
@@ -177,21 +183,13 @@ namespace BookingPayments.API.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ServiceName")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("TrainerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RoomId");
 
                     b.ToTable("Service");
 
@@ -199,36 +197,23 @@ namespace BookingPayments.API.Migrations
                         new
                         {
                             Id = 1,
-                            End = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CheckInDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CheckOutDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCancelled = false,
                             Price = 100,
-                            RoomId = 1,
                             ServiceName = "Service A",
-                            Start = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrainerId = 1
                         },
                         new
                         {
                             Id = 2,
-                            End = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CheckInDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CheckOutDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCancelled = false,
                             Price = 200,
-                            RoomId = 2,
                             ServiceName = "Service B",
-                            Start = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrainerId = 2
                         });
-                });
-
-            modelBuilder.Entity("BookingPayments.API.Entities.Service", b =>
-                {
-                    b.HasOne("BookingPayments.API.Entities.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Room");
                 });
 #pragma warning restore 612, 618
         }

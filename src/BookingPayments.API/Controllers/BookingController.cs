@@ -5,7 +5,6 @@ using BookingPayments.API.Entities.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 
-// TODO DTOS
 namespace BookingPayments.API.Controllers
 {
     [Route("api/[controller]")]
@@ -21,15 +20,14 @@ namespace BookingPayments.API.Controllers
         [HttpGet("user/{userId:int}")]
         public async Task<IActionResult> GetBookings(int userId)
         {
+            // Check if user exists here or in the service
             var bookings = await _bookingService.GetBookingsAsync(userId);
             return Ok(bookings.Select(b => new ResponseBookingDTO
             (
                 b.Id,
-                b.CheckInDate,
-                b.CheckOutDate,
-                b.Price,
                 b.ServiceId,
-                b.Status.ToString()
+                b.Status.ToString(),
+                b.UserId
             )));
         }
 
@@ -42,11 +40,9 @@ namespace BookingPayments.API.Controllers
             var response = new ResponseBookingDTO
             (
                 booking.Id,
-                booking.CheckInDate,
-                booking.CheckOutDate,
-                booking.Price,
                 booking.ServiceId,
-                booking.Status.ToString()
+                booking.Status.ToString(),
+                booking.UserId
             );
             return Ok(response);
         }
@@ -54,79 +50,51 @@ namespace BookingPayments.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBooking(CreateBookingDTO bookingDTO)
         {
+            // Check if the user is already registered on that service.
             var booking = new Booking
             {
                 BookingDate = DateTime.Now,
-                CheckInDate = bookingDTO.CheckInDate,
-                CheckOutDate = bookingDTO.CheckOutDate,
-                Price = 150, // Get price from service table
                 Status = BookingStatus.Pending,
-                ServiceId = 1,
+                ServiceId = bookingDTO.ServiceId,
+                UserId = bookingDTO.UserId
             };
 
             var b = await _bookingService.CreateBookingAsync(booking);
             var response = new ResponseBookingDTO
             (
                 b.Id,
-                b.CheckInDate,
-                b.CheckOutDate,
-                b.Price,
                 b.ServiceId,
-                b.Status.ToString()
+                b.Status.ToString(),
+                b.UserId
             );
             return CreatedAtAction(nameof(GetBooking), new { bookingId = b.Id }, response);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateBooking(UpdateBookingDTO bookingDTO)
-        {
-            var booking = new Booking
-            {
-                Id = bookingDTO.Id,
-                CheckInDate = bookingDTO.CheckInDate,
-                CheckOutDate = bookingDTO.CheckOutDate,
-                Status = BookingStatus.Pending,
-            };
-            var updatedBooking = await _bookingService.UpdateBookingAsync(booking);
-            if (updatedBooking == null) return NotFound();
-            var response = new ResponseBookingDTO
-            (
-                updatedBooking.Id,
-                updatedBooking.CheckInDate,
-                updatedBooking.CheckOutDate,
-                updatedBooking.Price,
-                updatedBooking.ServiceId,
-                updatedBooking.Status.ToString()
-            );
-            return Ok(response);
-        }
+        // No use for update right now.
+        //[HttpPut]
+        //public async Task<IActionResult> UpdateBooking(UpdateBookingDTO bookingDTO)
+        //{
+        //    var booking = new Booking
+        //    {
+        //        Id = bookingDTO.Id,
+        //        Status = BookingStatus.Pending,
+        //    };
+        //    var updatedBooking = await _bookingService.UpdateBookingAsync(booking);
+        //    if (updatedBooking == null) return NotFound();
+        //    var response = new ResponseBookingDTO
+        //    (
+        //        updatedBooking.Id,
+        //        updatedBooking.ServiceId,
+        //        updatedBooking.Status.ToString()
+        //    );
+        //    return Ok(response);
+        //}
 
+        // Deletion might not be necessary. Update the booking status to 'Cancelled'
         [HttpDelete("{bookingId:int}")]
         public async Task<IActionResult> DeleteBookingAsync(int bookingId)
         {
             return await _bookingService.DeleteBookingAsync(bookingId) ? Ok() : NotFound();
         }
-
-        // testing
-        [HttpGet("user/{userId:int}/upcoming-bookings")]
-        [HttpGet("user/{userId:int}/past-bookings")]
-        [HttpGet("user/{userId:int}/cancelled-bookings")]
-        public async Task<IActionResult> FilterBookings(int userId)
-        {
-            var path = HttpContext.Request.Path.Value;
-            var bookings = await _bookingService.GetBookingsAsync(userId, path!.Split("/")[^1]);
-            return Ok(bookings.Select(b => 
-                        new ResponseBookingDTO (
-                            b.Id,
-                            b.CheckInDate,
-                            b.CheckOutDate,
-                            b.Price,
-                            b.ServiceId,
-                            b.Status.ToString()
-                        )));
-        }
-
-
-
     }
 }

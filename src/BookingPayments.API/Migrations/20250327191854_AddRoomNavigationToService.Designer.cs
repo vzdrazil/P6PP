@@ -4,6 +4,7 @@ using BookingPayments.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingPayments.API.Migrations
 {
     [DbContext(typeof(BookPayDbContext))]
-    partial class BookPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250327191854_AddRoomNavigationToService")]
+    partial class AddRoomNavigationToService
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,9 +1,7 @@
 ﻿using BookingPayments.API.Application.Abstraction;
 using BookingPayments.API.Data;
 using BookingPayments.API.Entities;
-using BookingPayments.API.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace BookingPayments.API.Application.Implementation;
 
@@ -37,17 +35,9 @@ public class BookingAppService : IBookingAppService
             .SingleOrDefaultAsync(b => b.Id == bookingId);
     }
 
-    public Task<List<Booking>> GetBookingsAsync(int userId, string? condition)
+    public Task<List<Booking>> GetBookingsAsync(int userId)
     {
-        // for testing purposes
-        Expression<Func<Booking, bool>> predicate = condition switch
-        {
-            "upcoming-bookings" => b => b.CheckInDate > DateTime.Now,
-            "past-bookings" => b => b.CheckOutDate < DateTime.Now,
-            "cancelled-bookings" => b => b.Status == BookingStatus.Cancelled,
-            _ => b => b.UserId == userId
-        };
-        return _context.Bookings.Where(predicate)
+        return _context.Bookings.Where(b => b.UserId == userId)
                 .AsNoTracking()
                 .ToListAsync();
     }
@@ -57,8 +47,6 @@ public class BookingAppService : IBookingAppService
     {
         var dbBooking = await _context.Bookings.FindAsync(booking.Id);
         if (dbBooking is null) return null; // Return result
-        dbBooking.CheckInDate = booking.CheckInDate;
-        dbBooking.CheckOutDate = booking.CheckOutDate;
         dbBooking.Status = booking.Status;
         _context.Bookings.Update(dbBooking);
         await _context.SaveChangesAsync();

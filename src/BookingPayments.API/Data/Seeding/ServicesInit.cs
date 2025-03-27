@@ -14,7 +14,8 @@ internal class ServicesInit
                 TrainerId = 1,
                 Price = 100,
                 ServiceName = "Service A",
-                IsCancelled = false
+                IsCancelled = false,
+                RoomId = 1,
             },
             new Service
             {
@@ -22,7 +23,8 @@ internal class ServicesInit
                 TrainerId = 2,
                 Price = 200,
                 ServiceName = "Service B",
-                IsCancelled = false
+                IsCancelled = false,
+                RoomId = 2,
             }
         ];
     }

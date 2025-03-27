@@ -1,8 +1,3 @@
-﻿using BookingPayments.API.Entities.Enums;
+﻿namespace BookingPayments.API.DTOs.BookingDTOs;
 
-namespace BookingPayments.API.DTOs.BookingDTOs;
-
-public record UpdateBookingDTO(
-    int Id,
-    DateTime CheckInDate,
-    DateTime CheckOutDate);
+public record UpdateBookingDTO(int Id);
