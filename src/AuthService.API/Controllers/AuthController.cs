@@ -143,4 +143,18 @@ public class AuthController : Controller
         return Ok(new ApiResult<object>(new { UserId = user.UserId, Email = user.Email }, true,
             "Password reset successfully."));
     }
+    
+    [HttpGet("isVerified/{userId}")]
+    public async Task<IActionResult> IsVerified(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            return BadRequest(new ApiResult<object>(null, false, "User not found."));
+
+        var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+        if (!isEmailConfirmed)
+            return Ok(new ApiResult<object>(new {verified = false }, false, "Email not verified."));
+
+        return Ok(new ApiResult<object>(new { verified = true }, true, "User is verified."));
+    }
 }
