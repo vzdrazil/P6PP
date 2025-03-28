@@ -14,11 +14,11 @@ public abstract class ApiControllerBase : ControllerBase
         _mediator = mediator;
     }
 
-    protected async Task<IActionResult> ExecuteAsync<T>(IRequest<T> request) where T : class
+    protected async Task<IActionResult> ExecuteAsync<TResponse>(IRequest<TResponse> request) where TResponse : class
         => await HandleRequestAsync(async () =>
         {
-            var result = await _mediator.Send(request);
-            return Ok(result);
+            var response = await _mediator.Send(request);
+            return Ok(response);
         });
 
     protected async Task<IActionResult> ExecuteWithNoContentAsync(IRequest request)
@@ -28,15 +28,15 @@ public abstract class ApiControllerBase : ControllerBase
             return NoContent();
         });
 
-    protected async Task<IActionResult> ExecuteWithCreatedAtActionAsync<T>(IRequest<T> request, string actionName, Func<T, object> routeValuesFunc) where T : class
+    protected async Task<IActionResult> ExecuteWithCreatedAtActionAsync<TResponse>(IRequest<TResponse> request, string actionName, Func<TResponse, object> routeValuesFunc) where TResponse : class
     {
         return await HandleRequestAsync(async () =>
         {
-            T result = await _mediator.Send(request);
+            TResponse response = await _mediator.Send(request);
 
-            var routeValues = routeValuesFunc(result);
+            var routeValues = routeValuesFunc(response);
 
-            return CreatedAtAction(actionName, routeValues, result);
+            return CreatedAtAction(actionName, routeValues, response);
         });
     }
 
