@@ -32,7 +32,7 @@ services:
   booking-service:
     build:
       context: .
-      dockerfile: src/BookingPayments.API/Dockerfile
+      dockerfile: src/BookingService.API/Dockerfile
     container_name: booking-service
     ports:
       - "8080:8081"
