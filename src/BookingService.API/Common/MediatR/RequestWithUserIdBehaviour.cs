@@ -17,11 +17,8 @@ public sealed class UserIdBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        var httpContext = _httpContextAccessor.HttpContext
-            ?? throw new AuthException("Invalid JWT: HttpContext is null.");
-
-        var identity = httpContext.User.Identity as ClaimsIdentity
-            ?? throw new AuthException("Invalid JWT: Identity is null.");
+        var identity = _httpContextAccessor.HttpContext?.User.Identity as ClaimsIdentity
+            ?? throw new AuthException("Invalid JWT: Claims Identity is null.");
 
         var userIdClaim = identity.FindFirst(ClaimTypes.NameIdentifier)
             ?? throw new AuthException("Invalid JWT: UserId claim is missing.");
