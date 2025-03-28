@@ -1,10 +1,10 @@
-﻿using BookingPayments.API.Common.MediatR.Interfaces;
-using BookingPayments.API.Domain.Enums;
-using BookingPayments.API.Features.Bookings.Models;
-using BookingPayments.API.Infrastructure;
+﻿using BookingService.API.Common.MediatR.Interfaces;
+using BookingService.API.Domain.Enums;
+using BookingService.API.Features.Bookings.Models;
+using BookingService.API.Infrastructure;
 using MediatR;
 
-namespace BookingPayments.API.Features.Bookings.Commands;
+namespace BookingService.API.Features.Bookings.Commands;
 
 public sealed class CreateBookingCommand : IRequest<BookingResponse>, IRequestWithUserId
 {

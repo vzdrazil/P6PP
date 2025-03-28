@@ -1,7 +1,7 @@
-﻿using BookingPayments.API.Features.Bookings.Models;
+﻿using BookingService.API.Features.Bookings.Models;
 using FluentValidation;
 
-namespace BookingPayments.API.Features.Bookings.Validators;
+namespace BookingService.API.Features.Bookings.Validators;
 
 public sealed class CreateBookingRequestValidator : AbstractValidator<CreateBookingRequest>
 {

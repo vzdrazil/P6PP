@@ -1,7 +1,7 @@
-using BookingPayments.API.Domain.Enums;
-using BookingPayments.API.Domain.Models;
+using BookingService.API.Domain.Enums;
+using BookingService.API.Domain.Models;
 
-namespace BookingPayments.API.Infrastructure.Seeding;
+namespace BookingService.API.Infrastructure.Seeding;
 
 internal static class RoomsInit
 {

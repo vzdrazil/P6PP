@@ -1,4 +1,4 @@
-﻿namespace BookingPayments.API.Domain.Enums;
+﻿namespace BookingService.API.Domain.Enums;
 
 public enum BookingStatus
 {

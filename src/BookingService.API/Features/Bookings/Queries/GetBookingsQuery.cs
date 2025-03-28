@@ -1,11 +1,11 @@
-﻿using BookingPayments.API.Common.MediatR.Interfaces;
-using BookingPayments.API.Domain.Enums;
-using BookingPayments.API.Features.Bookings.Models;
-using BookingPayments.API.Infrastructure;
+﻿using BookingService.API.Common.MediatR.Interfaces;
+using BookingService.API.Domain.Enums;
+using BookingService.API.Features.Bookings.Models;
+using BookingService.API.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingPayments.API.Features.Bookings.Queries;
+namespace BookingService.API.Features.Bookings.Queries;
 
 public sealed class GetBookingsQuery : IRequest<IList<BookingResponse>>, IRequestWithUserId
 {

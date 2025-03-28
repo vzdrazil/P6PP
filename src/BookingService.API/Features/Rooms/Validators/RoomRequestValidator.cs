@@ -1,7 +1,7 @@
-﻿using BookingPayments.API.Features.Rooms.Models;
+﻿using BookingService.API.Features.Rooms.Models;
 using FluentValidation;
 
-namespace BookingPayments.API.Features.Rooms.Validators;
+namespace BookingService.API.Features.Rooms.Validators;
 
 public sealed class RoomRequestValidator : AbstractValidator<RoomRequest>
 {

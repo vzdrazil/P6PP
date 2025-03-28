@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BookingPayments.API.Migrations
+namespace BookingService.API.Migrations
 {
     /// <inheritdoc />
     public partial class EntityUpdate : Migration

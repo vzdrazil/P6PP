@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace BookingPayments.API.Infrastructure.Migrations
+namespace BookingService.API.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class UpdateEntities : Migration

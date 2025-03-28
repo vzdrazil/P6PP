@@ -1,9 +1,9 @@
-﻿using BookingPayments.API.Common.Exceptions;
-using BookingPayments.API.Common.MediatR.Interfaces;
+﻿using BookingService.API.Common.Exceptions;
+using BookingService.API.Common.MediatR.Interfaces;
 using MediatR;
 using System.Security.Claims;
 
-namespace BookingPayments.API.Common.MediatR;
+namespace BookingService.API.Common.MediatR;
 
 public sealed class UserIdBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>, IRequestWithUserId

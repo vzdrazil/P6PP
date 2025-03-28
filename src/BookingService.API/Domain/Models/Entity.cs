@@ -1,4 +1,4 @@
-namespace BookingPayments.API.Domain.Models;
+namespace BookingService.API.Domain.Models;
 
 public abstract class Entity<TKey>
 {

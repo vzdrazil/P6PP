@@ -1,6 +1,6 @@
-﻿using BookingPayments.API.Domain.Models;
+﻿using BookingService.API.Domain.Models;
 
-namespace BookingPayments.API.Features.Bookings.Models;
+namespace BookingService.API.Features.Bookings.Models;
 
 public static class BookingMappingExtensions
 {

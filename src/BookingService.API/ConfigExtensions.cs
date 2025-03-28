@@ -1,7 +1,7 @@
-﻿using BookingPayments.API.Common.MediatR;
-using BookingPayments.API.Features.Bookings.Queries;
-using BookingPayments.API.Features.Bookings.Validators;
-using BookingPayments.API.Infrastructure;
+﻿using BookingService.API.Common.MediatR;
+using BookingService.API.Features.Bookings.Queries;
+using BookingService.API.Features.Bookings.Validators;
+using BookingService.API.Infrastructure;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
-namespace BookingPayments.API;
+namespace BookingService.API;
 
 internal static class ConfigExtensions
 {

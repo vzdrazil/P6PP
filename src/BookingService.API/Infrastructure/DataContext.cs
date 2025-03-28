@@ -1,8 +1,8 @@
-using BookingPayments.API.Domain.Models;
-using BookingPayments.API.Infrastructure.Seeding;
+using BookingService.API.Domain.Models;
+using BookingService.API.Infrastructure.Seeding;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingPayments.API.Infrastructure;
+namespace BookingService.API.Infrastructure;
 
 public sealed class DataContext : DbContext
 {

@@ -1,10 +1,10 @@
-﻿using BookingPayments.API.Common.Exceptions;
-using BookingPayments.API.Infrastructure;
+﻿using BookingService.API.Common.Exceptions;
+using BookingService.API.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using BookingPayments.API.Features.Bookings.Models;
+using BookingService.API.Features.Bookings.Models;
 
-namespace BookingPayments.API.Features.Bookings.Queries;
+namespace BookingService.API.Features.Bookings.Queries;
 
 public sealed class GetBookingDetailQuery : IRequest<BookingResponse>
 {

@@ -1,8 +1,8 @@
-﻿using BookingPayments.API.Features.Rooms.Models;
-using BookingPayments.API.Infrastructure;
+﻿using BookingService.API.Features.Rooms.Models;
+using BookingService.API.Infrastructure;
 using MediatR;
 
-namespace BookingPayments.API.Features.Rooms.Commands;
+namespace BookingService.API.Features.Rooms.Commands;
 
 public sealed class CreateRoomCommand : IRequest<RoomResponse>
 {

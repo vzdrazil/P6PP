@@ -1,4 +1,4 @@
-﻿namespace BookingPayments.API.Common.MediatR.Interfaces;
+﻿namespace BookingService.API.Common.MediatR.Interfaces;
 
 public interface IRequestWithUserId
 {

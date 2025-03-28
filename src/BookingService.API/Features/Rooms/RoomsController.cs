@@ -1,11 +1,11 @@
-using BookingPayments.API.Features.Rooms.Commands;
-using BookingPayments.API.Features.Rooms.Models;
-using BookingPayments.API.Features.Rooms.Queries;
+using BookingService.API.Features.Rooms.Commands;
+using BookingService.API.Features.Rooms.Models;
+using BookingService.API.Features.Rooms.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace BookingPayments.API.Features.Rooms;
+namespace BookingService.API.Features.Rooms;
 
 [Route("api/[controller]")]
 //[Authorize(Roles = nameof(Roles.Admin) + ", " + nameof(Roles.Instructor))]

@@ -1,7 +1,7 @@
-using BookingPayments.API.Domain.Enums;
+using BookingService.API.Domain.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BookingPayments.API.Domain.Models;
+namespace BookingService.API.Domain.Models;
 
 [Table(nameof(Booking))]
 public sealed class Booking : Entity<int>

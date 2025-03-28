@@ -1,9 +1,9 @@
-﻿using BookingPayments.API.Common.Exceptions;
-using BookingPayments.API.Infrastructure;
+﻿using BookingService.API.Common.Exceptions;
+using BookingService.API.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingPayments.API.Features.Bookings.Commands;
+namespace BookingService.API.Features.Bookings.Commands;
 
 public sealed class DeleteBookingCommand : IRequest
 {

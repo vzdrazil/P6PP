@@ -1,3 +1,3 @@
-﻿namespace BookingPayments.API.Common.Exceptions;
+﻿namespace BookingService.API.Common.Exceptions;
 
 public sealed class ValidationException(string message) : Exception(message) { }

@@ -1,12 +1,12 @@
-﻿using BookingPayments.API.Domain.Enums;
-using BookingPayments.API.Features.Bookings.Commands;
-using BookingPayments.API.Features.Bookings.Models;
-using BookingPayments.API.Features.Bookings.Queries;
+﻿using BookingService.API.Domain.Enums;
+using BookingService.API.Features.Bookings.Commands;
+using BookingService.API.Features.Bookings.Models;
+using BookingService.API.Features.Bookings.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace BookingPayments.API.Features.Bookings;
+namespace BookingService.API.Features.Bookings;
 
 [Route("api/[controller]")]
 public sealed class BookingsController(IMediator mediator) : ApiControllerBase(mediator)

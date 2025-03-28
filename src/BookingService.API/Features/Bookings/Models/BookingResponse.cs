@@ -1,6 +1,6 @@
-﻿using BookingPayments.API.Domain.Enums;
+﻿using BookingService.API.Domain.Enums;
 
-namespace BookingPayments.API.Features.Bookings.Models;
+namespace BookingService.API.Features.Bookings.Models;
 
 public record BookingResponse(
     int Id,

@@ -1,8 +1,8 @@
-﻿using BookingPayments.API.Common.Exceptions;
+﻿using BookingService.API.Common.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookingPayments.API.Features;
+namespace BookingService.API.Features;
 
 [ApiController]
 public abstract class ApiControllerBase : ControllerBase
