@@ -27,6 +27,17 @@ builder.Services.AddIdentity<ApplicationUser, Role>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDevClient", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); 
+    });
+});
+
 builder.Services.AddHttpClient<NetworkHttpClient>();
 
 builder.Services.AddControllers();
@@ -106,6 +117,7 @@ if (!app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("AllowAngularDevClient");
 
 app.UseAuthentication();
 app.UseAuthorization();
