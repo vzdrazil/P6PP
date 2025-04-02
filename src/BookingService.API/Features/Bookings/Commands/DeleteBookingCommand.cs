@@ -27,9 +27,16 @@ public sealed class DeleteBookingCommandHandler : IRequestHandler<DeleteBookingC
     public async Task Handle(DeleteBookingCommand request, CancellationToken cancellationToken)
     {
         var booking = await _context.Bookings
-            .SingleOrDefaultAsync(b => b.Id == request.BookingId, cancellationToken)
+            .FirstOrDefaultAsync(b => b.Id == request.BookingId, cancellationToken)
             ?? throw new NotFoundException("Booking not found");
 
+        var service = await _context.Services
+            .FirstOrDefaultAsync(s => s.Id == booking.ServiceId, cancellationToken)
+            ?? throw new NotFoundException("Service not found");
+
+        // just to be sure
+
+        service.Users.Remove(booking.UserId);
         // todo: check ownership?
         // todo: payments etc.
 

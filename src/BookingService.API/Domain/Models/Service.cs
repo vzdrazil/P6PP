@@ -11,10 +11,10 @@ public sealed class Service : Entity<int>
     public int Price { get; set; }
     public string? ServiceName { get; set; }
     public bool IsCancelled { get; set; }
-
+    //public string ServiceDescription { get; set; }
     public int TrainerId { get; set; }
-
+    public List<int> Users { get; set; } = [];
     [ForeignKey(nameof(RoomId))]
-    public Room? Room { get; set; }
     public int RoomId { get; set; }
+    public Room? Room { get; set; }
 }

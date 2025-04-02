@@ -29,7 +29,7 @@ public sealed class GetBookingDetailQueryHandler : IRequestHandler<GetBookingDet
     {
         var booking = await _context.Bookings
             .AsNoTracking()
-            .FirstOrDefaultAsync(cancellationToken)
+            .FirstOrDefaultAsync(b => b.Id == request.BookingId, cancellationToken)
                 ?? throw new NotFoundException("Booking not found");
 
         return booking.Map();

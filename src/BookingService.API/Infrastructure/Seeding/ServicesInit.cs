@@ -16,6 +16,7 @@ internal static class ServicesInit
                 ServiceName = "Service A",
                 IsCancelled = false,
                 RoomId = 1,
+                Users = [12, 5, 8, 3, 4]
             },
             new Service
             {
@@ -25,6 +26,7 @@ internal static class ServicesInit
                 ServiceName = "Service B",
                 IsCancelled = false,
                 RoomId = 2,
+                Users = [7, 17, 9, 6, 8, 3, 10, 24, 93, 12, 34, 32, 55, 13, 11]
             }
         ];
     }
