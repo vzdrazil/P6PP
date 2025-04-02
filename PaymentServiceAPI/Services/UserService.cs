@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Caching.Memory;
-using UserService.API.Exceptions;
+using PaymentService.API.Exceptions;
 using UserService.API.Persistence.Entities;
 using UserService.API.Persistence.Repositories;
 

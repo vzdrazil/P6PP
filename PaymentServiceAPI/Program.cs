@@ -1,7 +1,7 @@
 using UserService.API.Extensions;
 using UserService.API.Features;
 using UserService.API.Features.Roles;
-using UserService.API.Persistence;
+// Ensure the correct namespace is used for the DatabaseInitializer and DatabaseSeeder
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +9,6 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(5185);
 });
-
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -40,7 +39,7 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseEndpoints(endpoints =>
+app.MapEndpoints(endpoints =>
 {
     // USER ENDPOINTS
     GetUserByIdEndpoint.Register(endpoints);
@@ -50,13 +49,10 @@ app.UseEndpoints(endpoints =>
     CreateUserEndpoint.Register(endpoints);
     AssignUserRoleEndpoint.Register(endpoints);
 
-
     // ROLE ENDPOINTS
     GetRoleByIdEndpoint.Register(endpoints);
     GetRolesEndpoint.Register(endpoints);
     CreateRoleEndpoint.Register(endpoints);
-
 });
 
 app.Run();
-
