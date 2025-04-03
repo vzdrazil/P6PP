@@ -3,7 +3,7 @@
 public enum RoomStatus
 {
     Available,
-    Occuppied,
-    Maintnance,
+    Occupied,
+    Maintenance,
     Reserved
 }

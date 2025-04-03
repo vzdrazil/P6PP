@@ -21,14 +21,14 @@ internal static class RoomsInit
                 Id = 2,
                 Name = "Room B",
                 Capacity = 15,
-                Status = RoomStatus.Occuppied
+                Status = RoomStatus.Occupied
             },
             new Room
             {
                 Id = 3,
                 Name = "Room C",
                 Capacity = 10,
-                Status = RoomStatus.Maintnance
+                Status = RoomStatus.Maintenance
             },
             new Room
             {
