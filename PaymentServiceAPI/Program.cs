@@ -1,3 +1,5 @@
+using PaymentService.API.Data;
+using Stripe;
 using UserService.API.Extensions;
 using UserService.API.Features;
 using UserService.API.Features.Roles;
@@ -14,6 +16,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.RegisterServices(builder.Configuration);
+
+var Services = builder.Services;
+var configuration = builder.Configuration;
+
+StripeConfiguration.ApiKey = configuration.GetSection("Stripe")["SecretKey"];
+
+Services.Configure<StripeSettings>(configuration.GetSection("Stripe")); 
 
 var app = builder.Build();
 
@@ -52,7 +61,7 @@ app.MapEndpoints(endpoints =>
     // ROLE ENDPOINTS
     GetRoleByIdEndpoint.Register(endpoints);
     GetRolesEndpoint.Register(endpoints);
-    CreateRoleEndpoint.Register(endpoints);
+    CreatePaymentEndpoint.Register(endpoints);
 });
 
 app.Run();

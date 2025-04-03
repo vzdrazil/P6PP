@@ -1,9 +1,9 @@
 using FluentValidation;
 using ReservationSystem.Shared.Results;
-using UserService.API.Persistence.Entities;
-using UserService.API.Services;
+using PaymentService.API.Persistence.Entities.DB.Models;
+using PaymentService.API.;
 
-namespace UserService.API.Features.Roles;
+namespace PaymentService.API.Features.Payments;
 
 public record GetRoleByIdRequest(int Id);
 
@@ -18,7 +18,7 @@ public class GetRoleByIdValidator : AbstractValidator<GetRoleByIdRequest>
 
 public class GetRoleByIdHandler
 {
-    private readonly RoleService _roleService;
+    private readonly PaymentService _roleService;
 
     public GetRoleByIdHandler(RoleService roleService)
     {

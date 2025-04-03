@@ -23,7 +23,7 @@ public static class ServiceExtensions
         services.AddScoped<UserRepository>();
         
         // Register Services
-        services.AddScoped<RoleService>();
+        services.AddScoped<Services.PaymentService>();
         services.AddScoped<Services.UserService>();
         
         // Register Endpoints injections
@@ -46,8 +46,8 @@ public static class ServiceExtensions
         services.AddScoped<GetRoleByIdHandler>();
         services.AddSingleton<GetRoleByIdValidator>();
         
-        services.AddScoped<CreateRoleHandler>();
-        services.AddSingleton<CreateRoleValidator>();
+        services.AddScoped<CreatePaymentHandler>();
+        services.AddSingleton<CreatePaymentValidator>();
 
         services.AddScoped<AssignUserRoleHandler>();
         services.AddSingleton<AssignUserRoleValidator>();

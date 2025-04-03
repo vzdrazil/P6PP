@@ -1,41 +1,41 @@
 using FluentValidation;
 using ReservationSystem.Shared.Results;
-using UserService.API.Persistence.Entities;
-using UserService.API.Services;
+using PaymentService.API.Persistence.Entities.DB.Models;
+using PaymentService.API.; // using UserService.API.Services;
 
 namespace UserService.API.Features.Roles;
 
-public record CreateRoleRequest(string Name, string Description);
+public record CreatePaymentRequest(string Name, string Description);
 
-public class CreateRoleValidator : AbstractValidator<CreateRoleRequest>
+public class CreatePaymentValidator : AbstractValidator<CreatePaymentRequest>
 {
-    public CreateRoleValidator()
+    public CreatePaymentValidator()
     {
         RuleFor(x => x.Name).NotEmpty();
         RuleFor(x => x.Description).NotEmpty();
     }
 }
 
-public class CreateRoleHandler
+public class CreatePaymentHandler
 {
-    private readonly RoleService _roleService;
+    private readonly PaymentService _paymentService;
 
-    public CreateRoleHandler(RoleService roleService)
+    public CreatePaymentHandler(PaymentService roleService)
     {
-        _roleService = roleService;
+        _paymentService = roleService;
     }
 
-    public async Task<ApiResult<int>> HandleAsync(CreateRoleRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResult<int>> HandleAsync(CreatePaymentRequest request, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var role = new Role
+        var role = new Payment;
         {
-            Name = request.Name,
+            Name = request.Name,                            
             Description = request.Description
         };
 
-        var id = await _roleService.AddRoleAsync(role, cancellationToken);
+        var id = await _paymentService.AddRoleAsync(role, cancellationToken);
 
         return id.HasValue
             ? new ApiResult<int>(id.Value)
@@ -44,14 +44,14 @@ public class CreateRoleHandler
 }
 
 
-public static class CreateRoleEndpoint
+public static class CreatePaymentEndpoint
 {
     public static void Register(IEndpointRouteBuilder app)
     {
         app.MapPost("/api/role",
-            async (CreateRoleRequest request,
-                CreateRoleHandler handler,
-                CreateRoleValidator validator,
+            async (CreatePaymentRequest request,
+                CreatePaymentHandler handler,
+                CreatePaymentValidator validator,
                 CancellationToken cancellationToken) =>
             {
                 var validationResult = await validator.ValidateAsync(request, cancellationToken);
