@@ -14,7 +14,6 @@ public sealed class GetServicesQuery : IRequest<IList<ServiceResponse>>
     }
     public GetServicesQuery()
     {
-
     }
 }
 

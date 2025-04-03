@@ -34,8 +34,6 @@ public sealed class DeleteBookingCommandHandler : IRequestHandler<DeleteBookingC
             .FirstOrDefaultAsync(s => s.Id == booking.ServiceId, cancellationToken)
             ?? throw new NotFoundException("Service not found");
 
-        // just to be sure
-
         service.Users.Remove(booking.UserId);
         // todo: check ownership?
         // todo: payments etc.

@@ -8,4 +8,5 @@ public record ServiceResponse(
     string ServiceName,
     int CurrentCapacity,
     int TotalCapacity,
-    string RoomName);
+    string RoomName,
+    bool IsCancelled);

@@ -37,7 +37,7 @@ public sealed class CreateBookingCommandHandler : IRequestHandler<CreateBookingC
                     ?? throw new NotFoundException("Service not found");
 
         if (service.IsCancelled)
-            throw new ValidationException("Service was cancelled");
+            throw new ValidationException("Service is cancelled");
         if (service.Users.Count >= service.Room!.Capacity)
             throw new ValidationException("Service capacity is full");
 
@@ -55,8 +55,6 @@ public sealed class CreateBookingCommandHandler : IRequestHandler<CreateBookingC
 
         _context.Bookings.Add(booking);
         await _context.SaveChangesAsync(cancellationToken);
-
-
 
         return booking.Map();
     }

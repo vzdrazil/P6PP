@@ -16,6 +16,14 @@ public static class ServiceMappingExtensions
         RoomId = input.RoomId,
     };
 
+    public static void MapTo(this UpdateServiceRequest input, Service output)
+    {
+        output.Start = input.Start;
+        output.End = input.End;
+        output.ServiceName = input.ServiceName;
+        output.RoomId = input.RoomId;
+    }
+
     public static ServiceResponse Map(this Service input)
         => new(
                 input.Id,
@@ -24,7 +32,8 @@ public static class ServiceMappingExtensions
                 input.ServiceName!,
                 input.Users.Count,
                 input.Room!.Capacity,
-                input.Room.Name!);
+                input.Room.Name!,
+                input.IsCancelled);
 
     public static IList<ServiceResponse> Map(this IList<Service> input)
         => [.. input.Select(Map)];
