@@ -4,11 +4,13 @@ using FluentValidation;
 using System.Net;
 using ReservationSystem.Shared.Results;
 using NotificationService.API.Persistence;
+using NotificationService.API.Logging;
+using System.Text;
 
 namespace NotificationService.API.Features;
 
 public record SendRegistrationEmail(string address, string name, string? language);
-public record SendRegistrationEmailResponse(int? Id=null);
+public record SendRegistrationEmailResponse(int? Id = null);
 
 public class SendRegistrationEmailValidator : AbstractValidator<SendRegistrationEmail>
 {
@@ -33,24 +35,25 @@ public class SendRegistrationEmailHandler
     public async Task<ApiResult<SendRegistrationEmailResponse>> Handle(SendRegistrationEmail request, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var template = await _templateAppService.GetTemplateAsync("Registration", request.language);
-
-        template.Text = template.Text.Replace("{name}", request.name);
-
-        var emailArgs = new EmailArgs
-        {
-            Address = new List<string> { request.address },
-            Subject = template.Subject,
-            Body = template.Text
-        };
 
         try
         {
+            var template = await _templateAppService.GetTemplateAsync("Registration", request.language);
+            template.Text = template.Text.Replace("{name}", request.name);
+
+            var emailArgs = new EmailArgs
+            {
+                Address = new List<string> { request.address },
+                Subject = template.Subject,
+                Body = template.Text
+            };
+
             await _mailAppService.SendEmailAsync(emailArgs);
             return new ApiResult<SendRegistrationEmailResponse>(new SendRegistrationEmailResponse());
         }
-        catch
+        catch (Exception ex)
         {
+            FileLogger.LogError($"Failed to send registration email to: {request.address}", ex);
             return new ApiResult<SendRegistrationEmailResponse>(null, false, "Email was not sent");
         }
     }
@@ -67,7 +70,15 @@ public static class SendRegistrationEmailEndpoint
 
                 if (!validationResult.IsValid)
                 {
-                    // Console.WriteLine(validationResult.Errors);
+                    var errorLog = new StringBuilder();
+                    errorLog.AppendLine("[VALIDATION ERROR] Registration email request validation failed:");
+                    foreach (var error in validationResult.Errors)
+                    {
+                        errorLog.AppendLine($" - {error.PropertyName}: {error.ErrorMessage}");
+                    }
+
+                    FileLogger.LogError(errorLog.ToString());
+
                     var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage);
                     return Results.BadRequest(new ApiResult<IEnumerable<string>>(errorMessages, false, "Validation failed"));
                 }
